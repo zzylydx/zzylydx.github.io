@@ -46,6 +46,7 @@
 </script>
 
   <meta name="description" content="区块的结构区块分为：区块头和区块体 区块头区块头包括三组元数据：  用于连接前面的区块、索引自父区块哈希值的数据。 挖矿难度、Nonce（随机数，用于工作量证明算法的随机数）、时间戳（当前区块的生成时间） 能够总结并快速归纳校验区块中所有交易数据的Merkle树根区块体主要包含交易数据tx区块结构图：交易结构图：区块的第一笔交易：coinbase交易结构">
+<meta name="keywords" content="Bitcoin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Bitcoin 区块结构解析">
 <meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;01&#x2F;22&#x2F;article&#x2F;index.html">
@@ -55,7 +56,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200122135547480.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200122135931223.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200122140049573.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2020-01-22T14:00:07.549Z">
+<meta property="og:updated_time" content="2020-01-22T14:09:56.689Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200122135547480.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
 
@@ -211,7 +212,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-01-22 21:50:49 / 修改时间：22:00:07" itemprop="dateCreated datePublished" datetime="2020-01-22T21:50:49+08:00">2020-01-22</time>
+              <time title="创建时间：2020-01-22 21:50:49 / 修改时间：22:09:56" itemprop="dateCreated datePublished" datetime="2020-01-22T21:50:49+08:00">2020-01-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,6 +259,9 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bitcoin/" rel="tag"># Bitcoin</a>
+          </div>
 
         
 
@@ -265,10 +269,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/01/22/Bitcoin%20%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/" rel="prev" title="Bitcoin 区块结构解析">
+    <a href="/2020/01/22/%E5%8C%BA%E5%9D%97%E7%9A%84%E7%BB%93%E6%9E%84/" rel="prev" title="Bitcoin 区块结构解析">
       <i class="fa fa-chevron-left"></i> Bitcoin 区块结构解析
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/22/%E4%BB%8EBitcoin%E4%B8%AD%E6%8F%90%E5%8F%96%E9%83%A8%E5%88%86%E7%AD%BE%E5%90%8D%E5%AD%97%E6%AE%B5R1/" rel="next" title="从Bitcoin中提取部分签名字段R">
+      从Bitcoin中提取部分签名字段R <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -332,8 +339,31 @@
         <span class="site-state-item-count">1</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zzylydx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zzylydx" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zzylydx@gmail.com" title="E-Mail → mailto:zzylydx@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/yourname" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/zzylydx" title="Google → https:&#x2F;&#x2F;plus.google.com&#x2F;zzylydx" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
 
 
 
