@@ -196,7 +196,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/01/22/%E4%BB%8EBitcoin%E4%B8%AD%E6%8F%90%E5%8F%96%E9%83%A8%E5%88%86%E7%AD%BE%E5%90%8D%E5%AD%97%E6%AE%B5R1/" class="post-title-link" itemprop="url">从Bitcoin中提取部分签名字段R</a>
+            <a href="/2020/01/22/%E4%BB%8EBitcoin%E4%B8%AD%E6%8F%90%E5%8F%96%E9%83%A8%E5%88%86%E7%AD%BE%E5%90%8D%E5%AD%97%E6%AE%B5R1/" class="post-title-link" itemprop="url">从Bitcoin中提取部分签名字段R（1）</a>
         </h1>
 
         <div class="post-meta">
@@ -205,10 +205,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-01-22 22:06:35 / 修改时间：22:07:50" itemprop="dateCreated datePublished" datetime="2020-01-22T22:06:35+08:00">2020-01-22</time>
+              <time title="创建时间：2020-01-22 22:06:35" itemprop="dateCreated datePublished" datetime="2020-01-22T22:06:35+08:00">2020-01-22</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-23 13:12:26" itemprop="dateModified" datetime="2020-01-23T13:12:26+08:00">2020-01-23</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -284,10 +290,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-01-22 21:50:49 / 修改时间：23:55:36" itemprop="dateCreated datePublished" datetime="2020-01-22T21:50:49+08:00">2020-01-22</time>
+              <time title="创建时间：2020-01-22 21:50:49" itemprop="dateCreated datePublished" datetime="2020-01-22T21:50:49+08:00">2020-01-22</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-23 13:17:42" itemprop="dateModified" datetime="2020-01-23T13:17:42+08:00">2020-01-23</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -316,8 +328,9 @@
 <ul>
 <li>用于连接前面的区块、索引自父区块哈希值的数据。</li>
 <li>挖矿难度、Nonce（随机数，用于工作量证明算法的随机数）、时间戳（当前区块的生成时间）</li>
-<li>能够总结并快速归纳校验区块中所有交易数据的Merkle树根<h4 id="区块体"><a href="#区块体" class="headerlink" title="区块体"></a>区块体</h4>主要包含交易数据tx<h4 id="区块结构图："><a href="#区块结构图：" class="headerlink" title="区块结构图："></a>区块结构图：</h4><img src="https://img-blog.csdnimg.cn/20200122235043793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="block"><h4 id="交易结构图："><a href="#交易结构图：" class="headerlink" title="交易结构图："></a>交易结构图：</h4><img src="https://img-blog.csdnimg.cn/20200122235102458.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="transaction"><h4 id="区块的第一笔交易：coinbase交易结构"><a href="#区块的第一笔交易：coinbase交易结构" class="headerlink" title="区块的第一笔交易：coinbase交易结构"></a>区块的第一笔交易：coinbase交易结构</h4><img src="https://img-blog.csdnimg.cn/20200122235138377.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="coinbase"></li>
+<li>能够总结并快速归纳校验区块中所有交易数据的Merkle树根<h4 id="区块体"><a href="#区块体" class="headerlink" title="区块体"></a>区块体</h4>主要包含交易数据tx<h4 id="区块结构图："><a href="#区块结构图：" class="headerlink" title="区块结构图："></a>区块结构图：</h4><img src="https://img-blog.csdnimg.cn/20200122235043793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="block"><h4 id="交易结构图："><a href="#交易结构图：" class="headerlink" title="交易结构图："></a>交易结构图：</h4><img src="https://img-blog.csdnimg.cn/20200122235102458.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="transaction"><h4 id="区块的第一笔交易：coinbase交易结构"><a href="#区块的第一笔交易：coinbase交易结构" class="headerlink" title="区块的第一笔交易：coinbase交易结构"></a>区块的第一笔交易：coinbase交易结构</h4><img src="https://img-blog.csdnimg.cn/20200122235138377.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="coinbase"><br>##总结</li>
 </ul>
+<p>2020.1.16——2020.1.23<br>这段时间主要完成了Bitcoin结构的分析及作图、和对前面提取签名工作的总结，目前代码编写出现问题，需要花时间去找到方法解决，之后会继续更新其他具有隐私保护能力的密码货币的区块结构图。</p>
 
       
     </div>
@@ -523,7 +536,7 @@ setInterval("createtime()",250);
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-01-22</span>
+  <span itemprop="copyrightYear">2020-01-23</span>
   <span class="with-love" id="animate">
     <i class="fa fa-smile"></i>
   </span>
