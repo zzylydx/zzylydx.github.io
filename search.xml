@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>从Bitcoin中提取部分签名字段R（1）</title>
+      <link href="/2020/01/22/%E4%BB%8EBitcoin%E4%B8%AD%E6%8F%90%E5%8F%96%E9%83%A8%E5%88%86%E7%AD%BE%E5%90%8D%E5%AD%97%E6%AE%B5R1/"/>
+      <url>/2020/01/22/%E4%BB%8EBitcoin%E4%B8%AD%E6%8F%90%E5%8F%96%E9%83%A8%E5%88%86%E7%AD%BE%E5%90%8D%E5%AD%97%E6%AE%B5R1/</url>
+      
+        <content type="html"><![CDATA[<h2 id="有关Bitcoin中部分签名的提取"><a href="#有关Bitcoin中部分签名的提取" class="headerlink" title="有关Bitcoin中部分签名的提取"></a>有关Bitcoin中部分签名的提取</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&ensp;&ensp;&ensp;&ensp;刚刚接触Bitcoin Wallet 里面的构造还不是很清楚，提取和解析指令也不是很熟悉，所以听到这个题目，有些无从下手，于是我先熟悉了bitcoin-cli的指令，例如：getblockhash + 区块高度、getblock + blockhash、getrawtransaction + Tx、decoderawtransaction + (getrawtransaction所获得的字符串)，想要获得签名r主要是通过这些指令，之后我学习了解析交易字符串后的各部分所代表的含义，通过学习精通比特币，我了解到在交易过程中，存在解锁脚本和锁定脚本，结合解析出的信息，我发现里面存在scriptSig这个字段名，但是里面存在两个字段：asm和hex，深入了解后发现，hex代表的是签名脚本的16进制字符串，至此我找到了目标提取字符串。下面具体介绍提取过程。</p><a id="more"></a><h3 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h3><p>&ensp;&ensp;&ensp;&ensp;提取出比特币钱包所有签名字段中的r，并找到相同的签名r。</p><h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><h5 id="UTXO"><a href="#UTXO" class="headerlink" title="UTXO"></a>UTXO</h5><p>&ensp;&ensp;&ensp;&ensp;比特币交易的基本单位是未经使用的一个交易输出UTXO。它是不可再分割的，在比它的金额还小的交易中就会存在找零行为，即会产生多个输出。实际上，并不存在存储比特币账户金额的地点，只有被所有者锁住的、分散在比特币网络中的UTXO。</p><h5 id="锁定脚本"><a href="#锁定脚本" class="headerlink" title="锁定脚本"></a>锁定脚本</h5><p>&ensp;&ensp;&ensp;&ensp;放在交易输出上的一个障碍，给出了花费UTXO的条件，一般包含条件操作符和限定公钥。</p><h5 id="解锁脚本"><a href="#解锁脚本" class="headerlink" title="解锁脚本"></a>解锁脚本</h5><p>&ensp;&ensp;&ensp;&ensp;是一个满足是锁定脚本限定条件的脚本，从而允许锁定的UTXO被花费，它也是交易输出的一部分，一般包含数字签名和对应公钥。</p><h6 id="比特币交易的具体过程"><a href="#比特币交易的具体过程" class="headerlink" title="比特币交易的具体过程"></a>比特币交易的具体过程</h6><p><img src="https://img-blog.csdnimg.cn/20200117231437525.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="Transaction"><br>&ensp;&ensp;&ensp;&ensp;当userB给userC发送btc时，会新产生UTXO，观察图中的橙色连线，我们发现，新产生的UTXO中的in中scriptSig的公钥与之前的UTXO中scriptPubKey的公钥相同，其实在交易的过程中，解锁脚本需要满足未花费UTXO锁定脚本的条件，通过脚本语言验证，也就是之前交易的输出，证明是其拥有者，即可将其中的比特币调出，生成新的交易输出。所以交易过程中签名就存放在解锁脚本里面，后面通过解析交易字符串，我们就可以明确的找到scriptSig的所在了。</p><h5 id="ECDSA"><a href="#ECDSA" class="headerlink" title="ECDSA"></a>ECDSA</h5><p>&ensp;&ensp;&ensp;&ensp;在比特币系统中，所采用的是椭圆曲线数字签名算法来对交易进行签名。签名会产生两部分：r、s</p><h5 id="解析交易字符串及部分字段的含义"><a href="#解析交易字符串及部分字段的含义" class="headerlink" title="解析交易字符串及部分字段的含义"></a>解析交易字符串及部分字段的含义</h5><p><img src="https://img-blog.csdnimg.cn/20200117231828793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="scriptSig"><br>vin：交易输入数组<br>&ensp;&ensp;txid：交易ID<br>&ensp;&ensp;vout：交易输出序号<br>&ensp;&ensp;&ensp;&ensp;scriptSig：签名脚本<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;asm：签名脚本的汇编码<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;hex：签名脚本的16进制字符串表示<br>&ensp;&ensp;sequence：输入序列号<br>发现scriptSig中存在两个字段asm和hex，签名r到底在哪个字段里面呢？</p><h5 id="Transaction字符串的详解含义图"><a href="#Transaction字符串的详解含义图" class="headerlink" title="Transaction字符串的详解含义图"></a>Transaction字符串的详解含义图</h5><p><img src="https://img-blog.csdnimg.cn/20200117232116798.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="TransactionAll"><br><strong>ScriptSig</strong><br><img src="https://img-blog.csdnimg.cn/20200117232230699.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="ScriptSig"><br>&ensp;&ensp;&ensp;&ensp;Lr的含义是签名r的长度，且每个小长方形代表两个字符，所以我们可以通过计算得到签名r的长度，从而可从字符串中截取出来。<br><strong>举个实例看一下：</strong><br>hex<br>4830450221<strong>00d71db39ae4f6bc3128d78661f6951bb17b097ab32e1ead3ce6fe761914715dd5</strong>02201970b34d36a9fef053b8b7a3c4555ef5bba14a88992449b980aee862465d966e01410404ac8c30c4e85f47702bfa8d8d56d8e614258958d6655611474da6cadb8c73195dc7951db3466caabd256ebc9f6ef87fcdb597b6cb048dd1bbf011713690ba19<br>其中黑体部分就是签名字段中的R<br>&ensp;&ensp;&ensp;&ensp;<strong>Lr=οχ21⟹32byte⇒32×8=256bit⇒256÷4=64</strong><br>&ensp;&ensp;&ensp;&ensp;所以可以得出签名r的长度是64，即在21之后的64个字符为签名r<br>至此，我们找到了需要提取的内容，我们可以通过编写脚本语言将其导出，但是截止2020年1月10日，整个比特币钱包的大小为300G，所拥有的的区块数目是612345，数据量较大，不容易导出。</p><h3 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h3><p>&ensp;&ensp;&ensp;&ensp;主要任务就是将数据导出，刚开始没有一点思路，慢慢地发现可以通过编写python代码，将数据导入到指定文件中去，一开始我是直接在服务器上写代码，将hex导出到文件中去，但是不知道如何将文件放到本地，并且通过指令操作文件、运行代码比较麻烦，就找到了另外一种方法，pycharm可以连接到服务器，可以对服务器上代码以及文件直接操作即可，但是比特币网络中的数据量太大，想要导出签名所需要耗费的时间太多，目前我只导出了前610000个区块的tx，后续导出签名的代码出现问题，还在修改中，希望能尽快导出所有的签名R。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Bitcoin </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Bitcoin </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Bitcoin 区块结构解析</title>
+      <link href="/2020/01/22/bitcoin%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84/"/>
+      <url>/2020/01/22/bitcoin%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84/</url>
+      
+        <content type="html"><![CDATA[<h2 id="区块的结构"><a href="#区块的结构" class="headerlink" title="区块的结构"></a>区块的结构</h2><p>区块分为：区块头和区块体</p><a id="more"></a><h4 id="区块头"><a href="#区块头" class="headerlink" title="区块头"></a>区块头</h4><p>区块头包括三组元数据：</p><ul><li>用于连接前面的区块、索引自父区块哈希值的数据。</li><li>挖矿难度、Nonce（随机数，用于工作量证明算法的随机数）、时间戳（当前区块的生成时间）</li><li>能够总结并快速归纳校验区块中所有交易数据的Merkle树根<h4 id="区块体"><a href="#区块体" class="headerlink" title="区块体"></a>区块体</h4>主要包含交易数据tx<h4 id="区块结构图："><a href="#区块结构图：" class="headerlink" title="区块结构图："></a>区块结构图：</h4><img src="https://img-blog.csdnimg.cn/20200122235043793.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="block"><h4 id="交易结构图："><a href="#交易结构图：" class="headerlink" title="交易结构图："></a>交易结构图：</h4><img src="../../images/transaction.png" alt="transaction"><h4 id="区块的第一笔交易：coinbase交易结构"><a href="#区块的第一笔交易：coinbase交易结构" class="headerlink" title="区块的第一笔交易：coinbase交易结构"></a>区块的第一笔交易：coinbase交易结构</h4><img src="../../images/coinbase.png" alt="coinbase"><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2></li></ul><p>2020.1.16——2020.1.23<br>这段时间主要完成了Bitcoin结构的分析及作图、和对前面提取签名工作的总结，目前代码编写出现问题，需要花时间去找到方法解决，之后会继续更新其他具有隐私保护能力的密码货币的区块结构图。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Bitcoin </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Bitcoin </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2019/12/01/hello-world/"/>
+      <url>/2019/12/01/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span></pre></td></tr></table></figure><a id="more"></a><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo server</span></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo generate</span></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>
