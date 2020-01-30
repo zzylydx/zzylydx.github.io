@@ -4,9 +4,9 @@ const ap = new APlayer({
     autoplay: true,
     audio: [
       {
-        name: "PDD洪荒之力",
-        artist: '徐梦圆',
-        url: 'http://up.mcyt.net/?down/39868.mp3',
+        name: "星星",
+        artist: '张杰',
+        url: 'http://music.163.com/song/media/outer/url?id=1399004693.mp3',
         cover: 'http://oeff2vktt.bkt.clouddn.com/image/84.jpg',
       },
       {
