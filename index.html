@@ -219,6 +219,129 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/01/ETH%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/T.jpg">
+      <meta itemprop="name" content="zzy">
+      <meta itemprop="description" content="记录成长的点滴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Stride Max Zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/01/ETH%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">ETH区块数据结构解析</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-01 20:50:49 / 修改时间：20:59:42" itemprop="dateCreated datePublished" datetime="2020-02-01T20:50:49+08:00">2020-02-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">区块结构</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    
+      <a title="changyan" href="/2020/02/01/ETH%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/#SOHUCS" itemprop="discussionUrl">
+        <span id="url::http://zzylydx.github.io/2020/02/01/ETH%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/" class="cy_cmt_count" data-xid="2020/02/01/ETH区块数据结构解析/" itemprop="commentCount"></span>
+      </a>
+    
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="区块的源码"><a href="#区块的源码" class="headerlink" title="区块的源码"></a>区块的源码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="comment">// Block represents an entire block in the Ethereum blockchain.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">type Block <span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    header       *Header</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    uncles       []*Header</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    transactions Transactions</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    <span class="comment">// caches</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    hash atomic.Value</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    <span class="built_in">size</span> atomic.Value</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    <span class="comment">// Td is used by package core to store the total difficulty</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    <span class="comment">// of the chain up to and including the block.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    td *big.Int</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"> </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    <span class="comment">// These fields are used by package eth to track</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">    <span class="comment">// inter-peer block relay.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    ReceivedAt   time.Time</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">    ReceivedFrom interface&#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<ul>
+<li>header：区块头，包含该区块的信息</li>
+<li>uncles：该区块所包含的叔块的信息</li>
+<li>transactions：该区块包含的交易信息</li>
+<li>td：总难度，即从开始区块到本区块（包括本区块）所有的难度的累加</li>
+<li>ReceivedAt：用于跟踪区块的生成  </li>
+<li>ReceivedFrom：用于跟踪区块的生成<h2 id="结构图："><a href="#结构图：" class="headerlink" title="结构图："></a>结构图：</h2><img src="/images/ETH_block.png" alt="ETH_block"><h2 id="各部分代表的含义"><a href="#各部分代表的含义" class="headerlink" title="各部分代表的含义"></a>各部分代表的含义</h2></li>
+<li>ParentHash：父区块的哈希值</li>
+<li>UncleHash：上面提到的uncles的RLP哈希值，uncles是一个Header数组</li>
+<li>Coinbase：挖出该区块矿工的地址，矿工费和挖出区块的奖励会发放到该地址</li>
+<li>Root：</li>
+<li>TxHash：存储该区块中交易的Merkle树的根节点的哈希</li>
+<li>ReceiptHash：存储该区块的交易的回单的Merkle树的根节点的哈希，Block的所有Transaction执行完后会生成一个Receipt数组</li>
+<li>Bloom：交易日志的布隆过滤器，用于查询</li>
+<li>Difficulty：区块的难度</li>
+<li>Number：区块高度</li>
+<li>Time：挖出该区块的时间戳</li>
+<li>GasLimit：区块内所有Gas消耗的上限</li>
+<li>GasUsed：执行区块内所有Transaction实际消耗的Gas总和</li>
+<li>Nonce：一个64bit的哈希数，用于工作量证明</li>
+<li>mixDigest：该哈希值与Nonce值一起证明该区块上已经进行了足够的计算，用于证明挖矿成功</li>
+<li>Extra：预留备用<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2>以太坊各个方面我也不太清楚，只能靠着自己了解的写一下，transaction的结构图没有给出，慢慢来吧，等我了解清楚再更新！</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/01/31/Hexo%20next%E4%B8%BB%E9%A2%98%E4%B8%AD%E6%B7%BB%E5%8A%A0%E6%92%AD%E6%94%BE%E5%99%A8Aplayer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -474,7 +597,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-01 19:28:23" itemprop="dateModified" datetime="2020-02-01T19:28:23+08:00">2020-02-01</time>
+                <time title="修改时间：2020-02-01 19:40:15" itemprop="dateModified" datetime="2020-02-01T19:40:15+08:00">2020-02-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -482,8 +605,8 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bitcoin/" itemprop="url" rel="index">
-                    <span itemprop="name">Bitcoin</span>
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">区块结构</span>
                   </a>
                 </span>
             </span>
@@ -702,20 +825,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -785,13 +908,13 @@ setInterval("createtime()",250);
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">5k</span>
+    <span title="站点总字数">6k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">5 分钟</span>
+    <span title="站点阅读时长">6 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
   </div>
@@ -800,7 +923,7 @@ setInterval("createtime()",250);
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">全站共 2.2k 字</span>
+  <span class="post-count">全站共 2.6k 字</span>
 </div>
 
         
