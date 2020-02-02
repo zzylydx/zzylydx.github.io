@@ -1,8 +1,14 @@
 const ap = new APlayer({
     container: document.getElementById('aplayer'),
     fixed: true,
-    autoplay: false,
+    autoplay: true,
     audio: [
+	  {
+        name: '下山',
+        artist: '要不要买菜',
+        url: 'http://music.163.com/song/media/outer/url?id=1404885266.mp3',
+        cover: '/images/8.jpg',
+      }
 	  {
         name: '勇气',
         artist: '棉子',
@@ -55,7 +61,13 @@ const ap = new APlayer({
         name: 'My Romeo',
         artist: 'Jessi',
         url: 'http://music.163.com/song/media/outer/url?id=432792207.mp3',
-        cover: '/images/4.jpg',
+        cover: '/images/6.jpg',
+      }
+	  {
+        name: '好想爱这个世界啊',
+        artist: '华晨宇',
+        url: 'http://music.163.com/song/media/outer/url?id=1407358755.mp3',
+        cover: '/images/7.jpg',
       }
     ]
 });
