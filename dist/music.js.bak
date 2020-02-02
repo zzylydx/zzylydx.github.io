@@ -1,7 +1,7 @@
 const ap = new APlayer({
     container: document.getElementById('aplayer'),
     fixed: true,
-    autoplay: true,
+    autoplay: false,
     audio: [
 	  {
         name: '下山',
@@ -68,6 +68,6 @@ const ap = new APlayer({
         artist: '华晨宇',
         url: 'http://music.163.com/song/media/outer/url?id=1407358755.mp3',
         cover: '/images/7.jpg',
-      },
+      }
     ]
 });
