@@ -51,5 +51,11 @@ const ap = new APlayer({
         url: 'http://music.163.com/song/media/outer/url?id=1386259535.mp3',
         cover: '/images/4.jpg',
       }
+	   {
+        name: 'My Romeo',
+        artist: 'Jessi',
+        url: 'http://music.163.com/song/media/outer/url?id=432792207.mp3',
+        cover: '/images/4.jpg',
+      }
     ]
 });
