@@ -8,7 +8,7 @@ const ap = new APlayer({
         artist: '要不要买菜',
         url: 'http://music.163.com/song/media/outer/url?id=1404885266.mp3',
         cover: '/images/8.jpg',
-      }
+      },
 	  {
         name: '勇气',
         artist: '棉子',
@@ -56,18 +56,18 @@ const ap = new APlayer({
         artist: '王恩信Est / 二胖u',
         url: 'http://music.163.com/song/media/outer/url?id=1386259535.mp3',
         cover: '/images/4.jpg',
-      }
+      },
 	  {
         name: 'My Romeo',
         artist: 'Jessi',
         url: 'http://music.163.com/song/media/outer/url?id=432792207.mp3',
         cover: '/images/6.jpg',
-      }
+      },
 	  {
         name: '好想爱这个世界啊',
         artist: '华晨宇',
         url: 'http://music.163.com/song/media/outer/url?id=1407358755.mp3',
         cover: '/images/7.jpg',
-      }
+      },
     ]
 });
