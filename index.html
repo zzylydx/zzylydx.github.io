@@ -219,6 +219,144 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/04/Zcash%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/T.jpg">
+      <meta itemprop="name" content="zzy">
+      <meta itemprop="description" content="记录成长的点滴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Stride Max Zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/02/04/Zcash%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">Zcash区块数据结构解析</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-04 16:37:21 / 修改时间：18:06:15" itemprop="dateCreated datePublished" datetime="2020-02-04T16:37:21+08:00">2020-02-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84/" itemprop="url" rel="index">
+                    <span itemprop="name">区块结构</span>
+                  </a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    
+      <a title="changyan" href="/2020/02/04/Zcash%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/#SOHUCS" itemprop="discussionUrl">
+        <span id="url::http://zzylydx.github.io/2020/02/04/Zcash%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/" class="cy_cmt_count" data-xid="2020/02/04/Zcash区块数据结构解析/" itemprop="commentCount"></span>
+      </a>
+    
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Zcash（ZEC）由Zooko Wilcox-O’Hearn于2016年推出，基于Zerocoin协议，Zcash（ZEC）是一种去中心化，开放源代码，以隐私为重点的加密货币，可实现交易的选择性透明化。Zcash交易可以是透明的，也可以通过称为zk-SNARKs的零知识证明来屏蔽。这允许网络维护余额的安全分类帐，而无需透露各方或涉及的金额。代替发布支出授权和交易值，对交易元数据进行加密，并使用zk-SNARK证明没有人是不诚实的。</p>
+<h2 id="Zcash区块的结构"><a href="#Zcash区块的结构" class="headerlink" title="Zcash区块的结构"></a>Zcash区块的结构</h2><h3 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h3><p><img src="/images/Zcash_block.png" alt="Zcash_block"></p>
+<h3 id="Block-Header"><a href="#Block-Header" class="headerlink" title="Block Header"></a>Block Header</h3><ul>
+<li>nVersion：版本号。</li>
+<li>hashPrevBlock：前一个区块的哈希值。</li>
+<li>hashMerkleRoot：内部字节顺序的SHA-256d哈希。 merkle根源自此块中包含的所有事务的哈希值，从而确保在不修改header的情况下不能修改这些事务。</li>
+<li>hashReserved /hashFinalSaplingRoot：</li>
+<li>nTime：时间戳，旷工打包区块的时间。</li>
+<li>nBits：工作量证明的难度目标。</li>
+<li>nNonce：随机数，用于工作量证明，矿工可以更改其任意字段以修改标头哈希，以产生小于或等于目标阈值的哈希。</li>
+<li>solutionSize：Equihash解决方案的大小（以字节为单位）。</li>
+<li>solution：Equihash解决方案</li>
+</ul>
+<h3 id="transactions"><a href="#transactions" class="headerlink" title="transactions"></a>transactions</h3><ul>
+<li>header：(version&gt;=1)</li>
+<li>nVersionGroupId：版本组ID(version&gt;=3)</li>
+<li>tx_in_count：此交易的输入数量(version&gt;=1)</li>
+<li>tx_in：交易输入（与bitcoin类似）(version&gt;=1)</li>
+<li>tx_out_count：此交易的输出数量(version&gt;=1)</li>
+<li>tx_out：交易输出（与bitcoin类似）(version&gt;=1)</li>
+<li>lock_time：锁定交易的时间(version&gt;=1)</li>
+<li>nExpiryHeight：块高度在{1 .. 499999999}范围内，之后交易将到期，或者为0以禁用到期时间(version&gt;=3)</li>
+<li>valueBalance：sapling花费的值减去output的值（对Zcash的交易过程不懂，所以不太懂这个的定义）(version&gt;=4)</li>
+<li>nShieldedSpend：</li>
+<li>vShieldedSpend：</li>
+<li>nShieldedOutput：</li>
+<li>vShieldedOutput：</li>
+<li>nJoinSplit：</li>
+<li>vJoinSplit：</li>
+<li>vJoinSplit：</li>
+<li>joinSplitPubKey：JoinSplitSig公共验证密钥的编码(version&gt;=2)</li>
+<li>joinSplitSig：对整个TransacTion数据使用私钥进行的签名(version&gt;=2)</li>
+<li>bindingSig：是整个Transaction数据的签名(verson&gt;=4)</li>
+</ul>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>今天一开始想学习的是XRP（瑞波币），了解了一番，大体知道它的优点：</p>
+<ul>
+<li>打包一个区块的时间仅需几秒钟，而比特币需要10分钟</li>
+<li>交易记录的确认方式更加快速，所有节点一起确认，仅仅需要3至5秒钟，而比特币是一个节点一个节点的确认，速度大大降低，需要40至50分钟<br>此外还了解到，XRP是一个去中心化、覆盖全货币币种的互联网金融交易系统，它的网关是资金进出如波系统的进出口，人们可以通过这个中介将各类货币注入或者抽离瑞波系统，它的货币供应量是1000亿。<br>本来是想先把它的区块结构图画出来的，结果寻找半天无果，我也想过通过分析源码找出结构代码，但是能力有限，好在Zcash有一篇白皮书让我找到了，这才得到了区块结构，慢慢深入了解Zcash的交易过程吧，进而完善blog！</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/01/ETH%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -815,7 +953,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -828,7 +966,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -888,7 +1026,7 @@ setInterval("createtime()",250);
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-02-02</span>
+  <span itemprop="copyrightYear">2020-02-04</span>
   <span class="with-love" id="animate">
     <i class="fa fa-smile"></i>
   </span>
@@ -898,13 +1036,13 @@ setInterval("createtime()",250);
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">8k</span>
+    <span title="站点总字数">10k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">7 分钟</span>
+    <span title="站点阅读时长">9 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
   </div>
@@ -913,7 +1051,7 @@ setInterval("createtime()",250);
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">全站共 3.1k 字</span>
+  <span class="post-count">全站共 3.9k 字</span>
 </div>
 
         
