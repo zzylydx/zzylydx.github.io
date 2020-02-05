@@ -64,7 +64,7 @@
 <meta property="og:site_name" content="Stride Max Zz">
 <meta property="og:description" content="简介数字签名算法（DSA）在联邦信息处理标准FIPS中有详细论述，称为数字签名标准。它的安全性基于素域上的离散对数问题。椭圆曲线密码（ECC）由Neal Koblitz和Victor Miller于1985年发明。它可以看作是椭圆曲线对先前基于离散对数问题（DLP）的密码系统的模拟，只是群元素由素域中的元素数换为有限域上的椭圆曲线上的点。椭圆曲线密码体制的安全性基于椭圆曲线离散对数问题（ECDLP">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-05T13:36:54.415Z">
+<meta property="og:updated_time" content="2020-02-05T13:46:00.040Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://zzylydx.github.io/2020/02/05/ECDSA/">
@@ -245,7 +245,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-02-05 20:01:26 / 修改时间：21:36:54" itemprop="dateCreated datePublished" datetime="2020-02-05T20:01:26+08:00">2020-02-05</time>
+              <time title="创建时间：2020-02-05 20:01:26 / 修改时间：21:46:00" itemprop="dateCreated datePublished" datetime="2020-02-05T20:01:26+08:00">2020-02-05</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -340,7 +340,7 @@
 <li>判断r和r1的关系，如果r=r1，则签名有效，否则签名无效</li>
 </ul>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>不太会用Markdown的公式，所以先凑活写一下，以后会用了，再更新！</p>
-<h2 id="ECDAS在Bitcoin中的应用"><a href="#ECDAS在Bitcoin中的应用" class="headerlink" title="ECDAS在Bitcoin中的应用"></a>ECDAS在Bitcoin中的应用</h2><p>主要应用于，transaction的签名，签名存放在解锁脚本的ScriptSig中，所以在签名中存在两个字段r，s。下面我们来具体分析下今天我看的东西。</p>
+<h2 id="ECDSA在Bitcoin中的应用"><a href="#ECDSA在Bitcoin中的应用" class="headerlink" title="ECDSA在Bitcoin中的应用"></a>ECDSA在Bitcoin中的应用</h2><p>主要应用于，transaction的签名，签名存放在解锁脚本的ScriptSig中，所以在签名中存在两个字段r，s。下面我们来具体分析下今天我看的东西。</p>
 <h3 id="Signature"><a href="#Signature" class="headerlink" title="Signature"></a>Signature</h3><ul>
 <li>选取一个随机数d，计算Publickey=dG</li>
 <li>e=hash(message)</li>
@@ -452,7 +452,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#椭圆曲线的参数"><span class="nav-number">3.</span> <span class="nav-text">椭圆曲线的参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KeyGen"><span class="nav-number">4.</span> <span class="nav-text">KeyGen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sign对消息m签名"><span class="nav-number">5.</span> <span class="nav-text">Sign对消息m签名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Verif"><span class="nav-number">6.</span> <span class="nav-text">Verif</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ECDAS在Bitcoin中的应用"><span class="nav-number">8.</span> <span class="nav-text">ECDAS在Bitcoin中的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Signature"><span class="nav-number">8.1.</span> <span class="nav-text">Signature</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#因为k1-k2，所以x1-x2，y1-y2，所以r1-r2"><span class="nav-number">9.</span> <span class="nav-text">因为k1=k2，所以x1=x2，y1=y2，所以r1=r2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-1"><span class="nav-number">10.</span> <span class="nav-text">小结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#椭圆曲线的参数"><span class="nav-number">3.</span> <span class="nav-text">椭圆曲线的参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KeyGen"><span class="nav-number">4.</span> <span class="nav-text">KeyGen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sign对消息m签名"><span class="nav-number">5.</span> <span class="nav-text">Sign对消息m签名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Verif"><span class="nav-number">6.</span> <span class="nav-text">Verif</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ECDSA在Bitcoin中的应用"><span class="nav-number">8.</span> <span class="nav-text">ECDSA在Bitcoin中的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Signature"><span class="nav-number">8.1.</span> <span class="nav-text">Signature</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#因为k1-k2，所以x1-x2，y1-y2，所以r1-r2"><span class="nav-number">9.</span> <span class="nav-text">因为k1=k2，所以x1=x2，y1=y2，所以r1=r2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-1"><span class="nav-number">10.</span> <span class="nav-text">小结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
