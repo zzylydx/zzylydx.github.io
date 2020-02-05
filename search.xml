@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>ECDSA</title>
+      <link href="/2020/02/05/ECDSA/"/>
+      <url>/2020/02/05/ECDSA/</url>
+      
+        <content type="html"><![CDATA[<h2 id="���"><a href="#���" class="headerlink" title="���"></a>���</h2><p>����ǩ���㷨��DSA����������Ϣ������׼FIPS������ϸ��������Ϊ����ǩ����׼�����İ�ȫ�Ի��������ϵ���ɢ�������⡣��Բ�������루ECC����Neal Koblitz��Victor Miller��1985�귢���������Կ�������Բ���߶���ǰ������ɢ�������⣨DLP��������ϵͳ��ģ�⣬ֻ��ȺԪ���������е�Ԫ������Ϊ�������ϵ���Բ�����ϵĵ㡣��Բ�����������Ƶİ�ȫ�Ի�����Բ������ɢ�������⣨ECDLP�����ѽ��ԡ���Բ������ɢ��������Զ������ɢ�������⣬��Բ��������ϵͳ�ĵ�λ����ǿ��ҪԶ���ڴ�ͳ����ɢ����ϵͳ�������ʹ�ý϶̵���Կ������£�ECC���Դﵽ��DLϵͳ��ͬ�İ�ȫ����������ĺô����Ǽ��������С����Կ���̣������ٶȸ��죬ǩ��Ҳ���Ӷ�С�������Բ�����������������ڴ����������洢�ռ䡢�������������޵ĳ��ϡ�</p><a id="more"></a><h2 id="ԭ��"><a href="#ԭ��" class="headerlink" title="ԭ��"></a>ԭ��</h2><p>ECDSA��ECC��DSA�Ľ�ϣ�����ǩ��������DSA���ƣ�����һ������ǩ���в�ȡ���㷨ΪECC�����ǩ��������ֵҲ�Ƿ�Ϊr,s��</p><h2 id="��Բ���ߵĲ���"><a href="#��Բ���ߵĲ���" class="headerlink" title="��Բ���ߵĲ���"></a>��Բ���ߵĲ���</h2><p>��Բ�����㷨�ǹ�����ѭ����Ⱥ�ϵģ������Ҫ���¼���������</p><ul><li>����p�����ֵ������������Ĵ�С</li><li>��Բ���ߵ�ϵ��a��b</li><li>����G��Ҳ������Ԫ</li><li>��Ⱥ�Ľ�n</li><li>cofactor h (h = N/n)</li></ul><h2 id="KeyGen"><a href="#KeyGen" class="headerlink" title="KeyGen"></a>KeyGen</h2><ul><li>GΪ��Բ�����ϵĵ㣬q����G����ɵ�����ѭ��Ⱥ�Ľ�</li><li>ѡȡ�����x��x����[1,q-1]</li><li>����Q=xG</li><li>˽ԿΪ��x����ԿΪ��Q</li></ul><hr><h2 id="Sign����Ϣmk��"><a href="#Sign����Ϣmk��" class="headerlink" title="Sign����Ϣmǩ��"></a>Sign����Ϣmǩ��</h2><ul><li>ѡȡ�����k��k����[1,q-1]</li><li>����R=kG=(Rx,Ry)�Լ�r=Rx mod q</li><li>����s=k^-1(H(m)+rx) mod q����r=0��s=0������ѡ�����k������ִ������Ĺ���</li><li>��Ϣm��ǩ��Ϊ(r,s)</li></ul><hr><h2 id="Verif"><a href="#Verif" class="headerlink" title="Verif"></a>Verif</h2><ul><li>����u=s^-1H(m) mod q, v=rs^-1 mod q</li><li>����(x1,y1)=uG+vQ��r1=x1 mod q</li><li>�ж�r��r1�Ĺ�ϵ�����r=r1����ǩ����Ч������ǩ����Ч</li></ul><h2 id="С��"><a href="#С��" class="headerlink" title="С��"></a>С��</h2><p>��̫����Markdown�Ĺ�ʽ�������ȴջ�дһ�£��Ժ�����ˣ��ٸ��£�</p><h2 id="ECDAS��Bitcoin�е�Ӧ��"><a href="#ECDAS��Bitcoin�е�Ӧ��" class="headerlink" title="ECDAS��Bitcoin�е�Ӧ��"></a>ECDAS��Bitcoin�е�Ӧ��</h2><p>��ҪӦ���ڣ�transaction��ǩ����ǩ������ڽ����ű���ScriptSig�У�������ǩ���д��������ֶ�r��s��������������������½����ҿ��Ķ�����</p><h3 id="Signature"><a href="#Signature" class="headerlink" title="Signature"></a>Signature</h3><ul><li>ѡȡһ�������d������Publickey=dG</li><li>e=hash(message)</li><li>ѡȡһ�������k</li><li>(x,y)=kG��r=x</li><li>s=(e+rd)/k<br>sig:(r,s)</li></ul><hr><p>�����ƺ�û��ʲô���⣬�����������ʹ��ͬһ�������k����k1=k2</p><ul><li>(x1,y1)=k1G</li><li>(x2,y2)=k2G</li></ul><hr><h2 id="��Ϊk1-k2������x1-x2��y1-y2������r1-r2"><a href="#��Ϊk1-k2������x1-x2��y1-y2������r1-r2" class="headerlink" title="��Ϊk1=k2������x1=x2��y1=y2������r1=r2"></a>��Ϊk1=k2������x1=x2��y1=y2������r1=r2</h2><ul><li>sig1:[r,(e1+rd)/k]</li><li>sig2:[r,(e2+rd)/k]</li><li>s1=(e1+rd)/k��s2=(e2+rd)/k</li><li>������ʽ����ͬʱ����õ���s1-s2=(e1-e2)/k������k=(e1-e2)/(s1-s2)</li><li>�õ�k֮��Ϳ��Լ��㣺d=(s1k-e1)/r</li></ul><h2 id="С��-1"><a href="#С��-1" class="headerlink" title="С��"></a>С��</h2><p>���������������Եõ�˽Կd���������ͬһ�û��µĽ���ǩ��r�ֶ���ȣ��Ϳ��Եõ�˽Կ����������˻��������ش����⣬������ǰ�ͷ��������Ĵ���PlayStation 3 ֻ�����б�����Ľ���ECDSAǩ������Ϸ���������ΪPlayStation 3������һ���µ���Ϸ�������Ҵ�������ǩ��ֵ�������Ҽ�ʱ�����ˣ�Ҳ���в��������Ϸ�������ǣ�����ǩ��ʱ����һ����̬��kֵ������������ɵġ�����k�ı����Էǳ���Ҫ����random numberҲ��֤��Ψһ�ԡ�</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Bitcoin </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> ECDSA </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Zcash区块数据结构解析</title>
       <link href="/2020/02/04/Zcash%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/"/>
       <url>/2020/02/04/Zcash%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/</url>
