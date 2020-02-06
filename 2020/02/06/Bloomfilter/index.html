@@ -56,16 +56,18 @@
   };
 </script>
 
-  <meta name="description" content="记录成长的点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Stride Max Zz">
-<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;tags&#x2F;ECDSA&#x2F;index.html">
+  <meta name="description" content="简介Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。 构成Bloom过滤器的实现是由⼀个可变⻓度（N） 的⼆进制数组（N位⼆进制数构成⼀个位域） 和数量可变（M） 的⼀组哈希函数组成。">
+<meta name="keywords" content="Bloom">
+<meta property="og:type" content="article">
+<meta property="og:title" content="filter">
+<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;02&#x2F;06&#x2F;Bloomfilter&#x2F;index.html">
 <meta property="og:site_name" content="Stride Max Zz">
-<meta property="og:description" content="记录成长的点滴">
+<meta property="og:description" content="简介Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。 构成Bloom过滤器的实现是由⼀个可变⻓度（N） 的⼆进制数组（N位⼆进制数构成⼀个位域） 和数量可变（M） 的⼀组哈希函数组成。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-06T13:01:51.408Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://zzylydx.github.io/tags/ECDSA/">
+<link rel="canonical" href="http://zzylydx.github.io/2020/02/06/Bloomfilter/">
 
 
 <script id="page-configurations">
@@ -73,13 +75,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>标签: ECDSA | Stride Max Zz</title>
+  <title>filter | Stride Max Zz</title>
   
 
 
@@ -214,54 +216,168 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">ECDSA
-          <small>标签</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/06/Bloomfilter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/T.jpg">
+      <meta itemprop="name" content="zzy">
+      <meta itemprop="description" content="记录成长的点滴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Stride Max Zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          filter
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-06 20:48:35 / 修改时间：21:01:51" itemprop="dateCreated datePublished" datetime="2020-02-06T20:48:35+08:00">2020-02-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B0%8F%E7%9F%A5%E8%AF%86/" itemprop="url" rel="index">
+                    <span itemprop="name">小知识</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+	    <span class="post-meta-divider">|</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 378</span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    
+      <a title="changyan" href="/2020/02/06/Bloomfilter/#SOHUCS" itemprop="discussionUrl">
+        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/02/06/Bloomfilter/" itemprop="commentCount"></span>
+      </a>
+    
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>468</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。<br>而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。</p>
+<h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>Bloom过滤器的实现是由⼀个可变⻓度（N） 的⼆进制数组（N位⼆进制数构成⼀个位域） 和数量可变（M） 的⼀组哈希函数组成。这些哈希函数的输出值始终在1和N之间， 该数值与⼆进制数组相对应。 并且该函数为确定性函数， 也就是说任何一个使相同Bloom过滤器的节点通过该函数都能对特定输入得到同一个的结果。 Bloom过滤器的准确性和私密性能通过改变长度（N）和哈希函数的数量（M）来调节。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>当Bloom过滤器中关键词增加时，它对应的某个哈希函数的输出值可能已经是1了，这种情况下，该位不会再次改变，所以会因为关键词的增加而导致准确性降低。</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>我最近在做bitcoin中签名r的提取并作出比较，数据量非常大，所以我觉得使用Bloom filter会节省很大的时间，以后我要尝试一下。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
+        
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-02-05T20:01:26+08:00"
-              content="2020-02-05">
-          02-05
-        </time>
-      </div>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>zzy
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="/http:/zzylydx.github.io/2020/02/06/Bloomfilter/" title="filter">http://zzylydx.github.io/2020/02/06/Bloomfilter/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
 
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/02/05/ECDSA/" itemprop="url">
-            <span itemprop="name">ECDSA</span>
-          </a>
-      </h2>
+      <div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bloom/" rel="tag"><i class="fa fa-tag"></i>Bloom</a>
+          </div>
 
-    </header>
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/05/ECDSA/" rel="prev" title="ECDSA">
+      <i class="fa fa-chevron-left"></i> ECDSA
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-    </div>
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
           
+    
+  <div class="comments" id="comments">
+    <div id="SOHUCS"></div>
+  </div>
+  
 	
         </div>
           
@@ -286,6 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构成"><span class="nav-number">2.</span> <span class="nav-text">构成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">4.</span> <span class="nav-text">应用</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -474,6 +591,19 @@ setInterval("createtime()",250);
 
   
 
+  <script>
+  (function() {
+    var appid = 'cyuF4lsoF';
+    var conf = 'bf3cb18c0b02ee881da786112597d211';
+    var width = window.innerWidth || document.documentElement.clientWidth;
+    if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+    } else {
+      var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})});
+    }
+  })();
+  </script>
+  <script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
 
   
   <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
