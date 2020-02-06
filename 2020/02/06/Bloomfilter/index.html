@@ -64,8 +64,10 @@
 <meta property="og:site_name" content="Stride Max Zz">
 <meta property="og:description" content="简介Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-06T13:05:21.887Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;Bloomfilter.png">
+<meta property="og:updated_time" content="2020-02-06T13:11:02.220Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;Bloomfilter.png">
 
 <link rel="canonical" href="http://zzylydx.github.io/2020/02/06/Bloomfilter/">
 
@@ -245,7 +247,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-02-06 20:48:35 / 修改时间：21:05:21" itemprop="dateCreated datePublished" datetime="2020-02-06T20:48:35+08:00">2020-02-06</time>
+              <time title="创建时间：2020-02-06 20:48:35 / 修改时间：21:11:02" itemprop="dateCreated datePublished" datetime="2020-02-06T20:48:35+08:00">2020-02-06</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -268,7 +270,7 @@
               <span id="busuanzi_value_page_pv"></span>
             </span>
 	    <span class="post-meta-divider">|</span>
-	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 378</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 381</span>
   
   <span class="post-meta-item">
     
@@ -311,7 +313,7 @@
       
         <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。<br>而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。</p>
 <a id="more"></a>
-<h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>Bloom过滤器的实现是由⼀个可变⻓度（N） 的⼆进制数组（N位⼆进制数构成⼀个位域） 和数量可变（M） 的⼀组哈希函数组成。这些哈希函数的输出值始终在1和N之间， 该数值与⼆进制数组相对应。 并且该函数为确定性函数， 也就是说任何一个使相同Bloom过滤器的节点通过该函数都能对特定输入得到同一个的结果。 Bloom过滤器的准确性和私密性能通过改变长度（N）和哈希函数的数量（M）来调节。</p>
+<h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>Bloom过滤器的实现是由⼀个可变⻓度（N）的二进制数组（N位⼆进制数构成⼀个位域）和数量可变（M）的一组哈希函数组成。这些哈希函数的输出值始终在1和N之间， 该数值与二进制数组相对应。 并且该函数为确定性函数， 也就是说任何一个使相同Bloom过滤器的节点通过该函数都能对特定输入得到同一个的结果。 Bloom过滤器的准确性和私密性能通过改变长度（N）和哈希函数的数量（M）来调节。<br><img src="/images/Bloomfilter.png" alt="Bloomfilter"></p>
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>当Bloom过滤器中关键词增加时，它对应的某个哈希函数的输出值可能已经是1了，这种情况下，该位不会再次改变，所以会因为关键词的增加而导致准确性降低。</p>
 <h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>我最近在做bitcoin中签名r的提取并作出比较，数据量非常大，所以我觉得使用Bloom filter会节省很大的时间，以后我要尝试一下。</p>
 
