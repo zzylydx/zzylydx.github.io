@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://zzylydx.github.io/"/>
-  <updated>2020-02-06T13:29:32.995Z</updated>
+  <updated>2020-02-07T13:31:27.420Z</updated>
   <id>http://zzylydx.github.io/</id>
   
   <author>
@@ -17,13 +17,36 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>VerifyTransaction</title>
+    <link href="http://zzylydx.github.io/2020/02/07/VerifyTransaction/"/>
+    <id>http://zzylydx.github.io/2020/02/07/VerifyTransaction/</id>
+    <published>2020-02-07T12:33:40.000Z</published>
+    <updated>2020-02-07T13:31:27.420Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="比特币中的签名"><a href="#比特币中的签名" class="headerlink" title="比特币中的签名"></a>比特币中的签名</h2><p>签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。<br>那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE。今天我门主要探索的是SIGHASH_ALL中交易的验证过程。</p><a id="more"></a><h2 id="具体过程"><a href="#具体过程" class="headerlink" title="具体过程"></a>具体过程</h2><p>下图当成两张图片使用<br><img src="/images/TxPrev.png" alt="TxPrev and TxNew"></p><ul><li>创建subscript：从OP_CODESEPARATOR到脚本的最后<br><img src="/images/PrevTx_PKScript.png" alt="PrevTx_PKScript"></li><li>如果脚本中存在签名则移除</li><li>把操作码：OP_CODESEPARATORS从脚本中移除<br><img src="/images/remove_op.png" alt="remove"></li><li>把hashtype从签名中移除<br><img src="/images/hashtype.png" alt="hashtype"></li><li>复制一份TxNew命名为TxCopy</li><li>把TxCopy中的所有TxIn置空</li><li>复制Subscript到你要验证的TxIn中</li><li>序列化TxCopy并且扩展4字节hashTypeCode(使用的是sha256^2)</li><li>通过字符串验证签名(hash strings是big-endian)<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2>这一个比较细节的过程，希望以后能够用的到</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;比特币中的签名&quot;&gt;&lt;a href=&quot;#比特币中的签名&quot; class=&quot;headerlink&quot; title=&quot;比特币中的签名&quot;&gt;&lt;/a&gt;比特币中的签名&lt;/h2&gt;&lt;p&gt;签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。&lt;br&gt;那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE。今天我门主要探索的是SIGHASH_ALL中交易的验证过程。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Bitcoin" scheme="http://zzylydx.github.io/categories/Bitcoin/"/>
+    
+    
+      <category term="verifytransaction" scheme="http://zzylydx.github.io/tags/verifytransaction/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Bloom filter</title>
     <link href="http://zzylydx.github.io/2020/02/06/Bloomfilter/"/>
     <id>http://zzylydx.github.io/2020/02/06/Bloomfilter/</id>
     <published>2020-02-06T12:48:35.000Z</published>
-    <updated>2020-02-06T13:29:32.995Z</updated>
+    <updated>2020-02-07T11:52:27.359Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。<br>而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。</p><a id="more"></a><h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>Bloom过滤器的实现是由⼀个可变⻓度（N）的二进制数组（N位⼆进制数构成⼀个位域）和数量可变（M）的一组哈希函数组成。这些哈希函数的输出值始终在1和N之间， 该数值与二进制数组相对应。 并且该函数为确定性函数， 也就是说任何一个使相同Bloom过滤器的节点通过该函数都能对特定输入得到同一个的结果。 Bloom过滤器的准确性和私密性能通过改变长度（N）和哈希函数的数量（M）来调节。<br><img src="/images/Bloomfilter.png" alt="Bloomfilter"></p><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>当Bloom过滤器中关键词增加时，它对应的某个哈希函数的输出值可能已经是1了，这种情况下，该位不会再次改变，所以会因为关键词的增加而导致准确性降低。</p><h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>我最近在做bitcoin中签名r的提取并作出比较，数据量非常大，所以我觉得使用Bloom filter会节省很大的时间，以后我要尝试一下。<br>今天学习到的一些东西：</p><ul><li>verify transaction具体的过程，近期更新</li><li>Brainwallets存在安全隐患，它的私钥是根据一串用户指定的字符哈希而来，PPT中说到它使用的是math.Random()，它的范围是0<del>1中的小数，而比特币钱包中私钥的生成是选取的不可预测或者不可重复的1</del>2^256中的随机数，之后我也会更新一下有关bitcoin中私钥公钥地址之间是怎样生成的。</li><li>发现了个新的东西：若k1-k2=c，且c已知，也可以造成泄漏，但是我还没看懂！看懂了再更新！</li></ul>]]></content>
+    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。<br>而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。</p><a id="more"></a><h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>Bloom过滤器的实现是由⼀个可变⻓度（N）的二进制数组（N位⼆进制数构成⼀个位域）和数量可变（M）的一组哈希函数组成。这些哈希函数的输出值始终在1和N之间， 该数值与二进制数组相对应。 并且该函数为确定性函数， 也就是说任何一个使相同Bloom过滤器的节点通过该函数都能对特定输入得到同一个的结果。 Bloom过滤器的准确性和私密性能通过改变长度（N）和哈希函数的数量（M）来调节。<br><img src="/images/Bloomfilter.png" alt="Bloomfilter"></p><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>当Bloom过滤器中关键词增加时，它对应的某个哈希函数的输出值可能已经是1了，这种情况下，该位不会再次改变，所以会因为关键词的增加而导致准确性降低。</p><h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>我最近在做bitcoin中签名r的提取并作出比较，数据量非常大，所以我觉得使用Bloom filter会节省很大的时间，以后我要尝试一下。<br>今天学习到的一些东西：</p><ul><li>verify transaction具体的过程，近期更新</li><li>Brainwallets存在安全隐患，它的私钥是根据一串用户指定的字符哈希而来，PPT中说到它使用的是math.Random()，它的范围是0-1中的小数，而比特币钱包中私钥的生成是选取的不可预测或者不可重复的1-2^256中的随机数，之后我也会更新一下有关bitcoin中私钥公钥地址之间是怎样生成的。</li><li>发现了个新的东西：若k1-k2=c，且c已知，也可以造成泄漏，但是我还没看懂！看懂了再更新！</li></ul>]]></content>
     
     <summary type="html">
     

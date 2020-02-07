@@ -56,16 +56,23 @@
   };
 </script>
 
-  <meta name="description" content="记录成长的点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Stride Max Zz">
-<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;categories&#x2F;%E5%B0%8F%E7%9F%A5%E8%AF%86&#x2F;index.html">
+  <meta name="description" content="比特币中的签名签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGH">
+<meta name="keywords" content="verifytransaction">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VerifyTransaction">
+<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;02&#x2F;07&#x2F;VerifyTransaction&#x2F;index.html">
 <meta property="og:site_name" content="Stride Max Zz">
-<meta property="og:description" content="记录成长的点滴">
+<meta property="og:description" content="比特币中的签名签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGH">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;TxPrev.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;PrevTx_PKScript.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;remove_op.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;hashtype.png">
+<meta property="og:updated_time" content="2020-02-07T13:31:27.420Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;TxPrev.png">
 
-<link rel="canonical" href="http://zzylydx.github.io/categories/%E5%B0%8F%E7%9F%A5%E8%AF%86/">
+<link rel="canonical" href="http://zzylydx.github.io/2020/02/07/VerifyTransaction/">
 
 
 <script id="page-configurations">
@@ -73,13 +80,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>分类: 小知识 | Stride Max Zz</title>
+  <title>VerifyTransaction | Stride Max Zz</title>
   
 
 
@@ -214,54 +221,178 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">小知识
-          <small>分类</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/07/VerifyTransaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/T.jpg">
+      <meta itemprop="name" content="zzy">
+      <meta itemprop="description" content="记录成长的点滴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Stride Max Zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VerifyTransaction
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-07 20:33:40 / 修改时间：21:31:27" itemprop="dateCreated datePublished" datetime="2020-02-07T20:33:40+08:00">2020-02-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bitcoin/" itemprop="url" rel="index">
+                    <span itemprop="name">Bitcoin</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+	    <span class="post-meta-divider">|</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 285</span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    
+      <a title="changyan" href="/2020/02/07/VerifyTransaction/#SOHUCS" itemprop="discussionUrl">
+        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/02/07/VerifyTransaction/" itemprop="commentCount"></span>
+      </a>
+    
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>497</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
+        <h2 id="比特币中的签名"><a href="#比特币中的签名" class="headerlink" title="比特币中的签名"></a>比特币中的签名</h2><p>签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。<br>那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE。今天我门主要探索的是SIGHASH_ALL中交易的验证过程。</p>
+<a id="more"></a>
+<h2 id="具体过程"><a href="#具体过程" class="headerlink" title="具体过程"></a>具体过程</h2><p>下图当成两张图片使用<br><img src="/images/TxPrev.png" alt="TxPrev and TxNew"></p>
+<ul>
+<li>创建subscript：从OP_CODESEPARATOR到脚本的最后<br><img src="/images/PrevTx_PKScript.png" alt="PrevTx_PKScript"></li>
+<li>如果脚本中存在签名则移除</li>
+<li>把操作码：OP_CODESEPARATORS从脚本中移除<br><img src="/images/remove_op.png" alt="remove"></li>
+<li>把hashtype从签名中移除<br><img src="/images/hashtype.png" alt="hashtype"></li>
+<li>复制一份TxNew命名为TxCopy</li>
+<li>把TxCopy中的所有TxIn置空</li>
+<li>复制Subscript到你要验证的TxIn中</li>
+<li>序列化TxCopy并且扩展4字节hashTypeCode(使用的是sha256^2)</li>
+<li>通过字符串验证签名(hash strings是big-endian)<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2>这一个比较细节的过程，希望以后能够用的到</li>
+</ul>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
+        
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-02-06T20:48:35+08:00"
-              content="2020-02-06">
-          02-06
-        </time>
-      </div>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>zzy
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="/http:/zzylydx.github.io/2020/02/07/VerifyTransaction/" title="VerifyTransaction">http://zzylydx.github.io/2020/02/07/VerifyTransaction/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
 
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/02/06/Bloomfilter/" itemprop="url">
-            <span itemprop="name">Bloom filter</span>
-          </a>
-      </h2>
+      <div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/verifytransaction/" rel="tag"><i class="fa fa-tag"></i>verifytransaction</a>
+          </div>
 
-    </header>
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/06/Bloomfilter/" rel="prev" title="Bloom filter">
+      <i class="fa fa-chevron-left"></i> Bloom filter
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-    </div>
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
           
+    
+  <div class="comments" id="comments">
+    <div id="SOHUCS"></div>
+  </div>
+  
 	
         </div>
           
@@ -286,6 +417,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#比特币中的签名"><span class="nav-number">1.</span> <span class="nav-text">比特币中的签名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体过程"><span class="nav-number">2.</span> <span class="nav-text">具体过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -474,6 +606,19 @@ setInterval("createtime()",250);
 
   
 
+  <script>
+  (function() {
+    var appid = 'cyuF4lsoF';
+    var conf = 'bf3cb18c0b02ee881da786112597d211';
+    var width = window.innerWidth || document.documentElement.clientWidth;
+    if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+    } else {
+      var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})});
+    }
+  })();
+  </script>
+  <script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
 
   
   <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
