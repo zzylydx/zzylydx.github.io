@@ -56,20 +56,18 @@
   };
 </script>
 
-  <meta name="description" content="简介Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。">
-<meta name="keywords" content="Bloom">
+  <meta name="description" content="前言在2014HITB-Exploiting ECDSA Failures in the Bitcoin Blockchain中他所使用提取签名的方法是通过Bloomfilter实现的，作者提到：  first pass：把签名添加到Bloomfilter里面，作者所使用的是：dablooms，如果过滤器中已经存在了该签名，则把该签名放到一个map中叫做：potentialValues secon">
+<meta name="keywords" content="blockchainr">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Bloom filter">
-<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;02&#x2F;06&#x2F;Bloomfilter&#x2F;index.html">
+<meta property="og:title" content="VerifyTransaction">
+<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;02&#x2F;08&#x2F;Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90&#x2F;index.html">
 <meta property="og:site_name" content="Stride Max Zz">
-<meta property="og:description" content="简介Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。">
+<meta property="og:description" content="前言在2014HITB-Exploiting ECDSA Failures in the Bitcoin Blockchain中他所使用提取签名的方法是通过Bloomfilter实现的，作者提到：  first pass：把签名添加到Bloomfilter里面，作者所使用的是：dablooms，如果过滤器中已经存在了该签名，则把该签名放到一个map中叫做：potentialValues secon">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;Bloomfilter.png">
-<meta property="og:updated_time" content="2020-02-07T11:52:27.359Z">
+<meta property="og:updated_time" content="2020-02-08T09:25:12.383Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;Bloomfilter.png">
 
-<link rel="canonical" href="http://zzylydx.github.io/2020/02/06/Bloomfilter/">
+<link rel="canonical" href="http://zzylydx.github.io/2020/02/08/Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -83,7 +81,7 @@
   };
 </script>
 
-  <title>Bloom filter | Stride Max Zz</title>
+  <title>VerifyTransaction | Stride Max Zz</title>
   
 
 
@@ -223,7 +221,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/06/Bloomfilter/">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/08/Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/T.jpg">
@@ -236,7 +234,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Bloom filter
+          VerifyTransaction
         </h1>
 
         <div class="post-meta">
@@ -245,24 +243,18 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-02-06 20:48:35" itemprop="dateCreated datePublished" datetime="2020-02-06T20:48:35+08:00">2020-02-06</time>
+              <time title="创建时间：2020-02-08 17:33:40 / 修改时间：17:25:12" itemprop="dateCreated datePublished" datetime="2020-02-08T17:33:40+08:00">2020-02-08</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-07 19:52:27" itemprop="dateModified" datetime="2020-02-07T19:52:27+08:00">2020-02-07</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B0%8F%E7%9F%A5%E8%AF%86/" itemprop="url" rel="index">
-                    <span itemprop="name">小知识</span>
+                  <a href="/categories/Bitcoin/" itemprop="url" rel="index">
+                    <span itemprop="name">Bitcoin</span>
                   </a>
                 </span>
             </span>
@@ -276,7 +268,7 @@
               <span id="busuanzi_value_page_pv"></span>
             </span>
 	    <span class="post-meta-divider">|</span>
-	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 548</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 913</span>
   
   <span class="post-meta-item">
     
@@ -286,8 +278,8 @@
       <span class="post-meta-item-text">Changyan：</span>
     
     
-      <a title="changyan" href="/2020/02/06/Bloomfilter/#SOHUCS" itemprop="discussionUrl">
-        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/02/06/Bloomfilter/" itemprop="commentCount"></span>
+      <a title="changyan" href="/2020/02/08/Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/#SOHUCS" itemprop="discussionUrl">
+        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/02/08/Blockchainr源码剖析/" itemprop="commentCount"></span>
       </a>
     
   </span>
@@ -298,14 +290,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>704</span>
+              <span>2.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -317,16 +309,57 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。<br>而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。</p>
-<a id="more"></a>
-<h2 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h2><p>Bloom过滤器的实现是由⼀个可变⻓度（N）的二进制数组（N位⼆进制数构成⼀个位域）和数量可变（M）的一组哈希函数组成。这些哈希函数的输出值始终在1和N之间， 该数值与二进制数组相对应。 并且该函数为确定性函数， 也就是说任何一个使相同Bloom过滤器的节点通过该函数都能对特定输入得到同一个的结果。 Bloom过滤器的准确性和私密性能通过改变长度（N）和哈希函数的数量（M）来调节。<br><img src="/images/Bloomfilter.png" alt="Bloomfilter"></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>当Bloom过滤器中关键词增加时，它对应的某个哈希函数的输出值可能已经是1了，这种情况下，该位不会再次改变，所以会因为关键词的增加而导致准确性降低。</p>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>我最近在做bitcoin中签名r的提取并作出比较，数据量非常大，所以我觉得使用Bloom filter会节省很大的时间，以后我要尝试一下。<br>今天学习到的一些东西：</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在<a href="https://conference.hitb.org/hitbsecconf2014kul/materials/D1T1%20-%20Filippo%20Valsorda%20-%20Exploiting%20ECDSA%20Failures%20in%20the%20Bitcoin%20Blockchain.pdf" target="_blank" rel="noopener">2014HITB-Exploiting ECDSA Failures in the Bitcoin Blockchain</a>中他所使用提取签名的方法是通过Bloomfilter实现的，作者提到：</p>
 <ul>
-<li>verify transaction具体的过程，近期更新</li>
-<li>Brainwallets存在安全隐患，它的私钥是根据一串用户指定的字符哈希而来，PPT中说到它使用的是math.Random()，它的范围是0-1中的小数，而比特币钱包中私钥的生成是选取的不可预测或者不可重复的1-2^256中的随机数，之后我也会更新一下有关bitcoin中私钥公钥地址之间是怎样生成的。</li>
-<li>发现了个新的东西：若k1-k2=c，且c已知，也可以造成泄漏，但是我还没看懂！看懂了再更新！</li>
+<li>first pass：把签名添加到Bloomfilter里面，作者所使用的是：<a href="https://github.com/bitly/dablooms" target="_blank" rel="noopener">dablooms</a>，如果过滤器中已经存在了该签名，则把该签名放到一个map中叫做：potentialValues</li>
+<li>second pass：重新遍历signature，如果签名存在于potentialValues中，导出签名以及它的其他信息到map：rMap中</li>
 </ul>
+<hr>
+<p>下面具体展开对源码的剖析</p>
+<h2 id="blockchainr"><a href="#blockchainr" class="headerlink" title="blockchainr"></a>blockchainr</h2><h3 id="代码整体架构"><a href="#代码整体架构" class="headerlink" title="代码整体架构"></a>代码整体架构</h3><ul>
+<li>main函数</li>
+<li>btcdbSetup函数</li>
+<li>getSignatures函数</li>
+<li>search函数</li>
+</ul>
+<h4 id="getSignature"><a href="#getSignature" class="headerlink" title="getSignature"></a>getSignature</h4><p>此函数的目的是导出区块中所有的Signature，作者定义了一个结构体，用于存放与签名相关的信息</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">type rData <span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	sig  *btcec.Signature</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	H    int64</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	Tx   <span class="keyword">int</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">	TxIn <span class="keyword">int</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	Data <span class="keyword">int</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<ul>
+<li>sig：签名(包含r、s)</li>
+<li>H：交易所在区块的高度</li>
+<li>Tx：区块中的第几笔交易</li>
+<li>TxIn：交易中第几个TxIn</li>
+<li>Data：</li>
+</ul>
+<p>该函数的返回值是这个类型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="function">func <span class="title">getSignatures</span><span class="params">(maxHeigth int64, <span class="built_in">log</span> btclog.Logger, db btcdb.Db)</span> chan *rData </span>&#123;&#125;</span></pre></td></tr></table></figure>
+<p>具体过程就不说了，它主要就是通过一层层的循环将数据导出的(思想如下)：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> block in chain:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	<span class="keyword">for</span> tx in block:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">for</span> input in tx:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">		...</span></pre></td></tr></table></figure>
+
+<h4 id="search函数"><a href="#search函数" class="headerlink" title="search函数"></a>search函数</h4><p>使用dablooms这个Bloom过滤器，设置了容量、错误率等，都定义了常量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	tickFreq  = <span class="number">10</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	bloomSize = <span class="number">100000000</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	bloomRate = <span class="number">0.005</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">)</span></pre></td></tr></table></figure>
+<p>这里作者设置的容量是100000000，我觉得在2014年这个数据容量应该足够了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">filter := dablooms.NewScalingBloom(bloomSize, bloomRate, <span class="string">"blockchainr_bloom.bin"</span>)</span></pre></td></tr></table></figure>
+<p>主要的提取过程前面提到了分为两步代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="built_in">step</span> == <span class="number">1</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">				b := rd.sig.R.Bytes()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">				<span class="keyword">if</span> filter.Check(b) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">					matches++</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">					potentialValues.Add(rd.sig.R.<span class="keyword">String</span>())</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">				&#125; <span class="keyword">else</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">					<span class="keyword">if</span> !filter.Add(b, <span class="number">1</span>) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">						<span class="built_in">log</span>.Warn(<span class="string">"Add failed (?)"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">					&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">				&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="built_in">step</span> == <span class="number">2</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">				<span class="keyword">if</span> potentialValues.Contains(rd.sig.R.<span class="keyword">String</span>()) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">					matches++</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">					rMap[rd.sig.R.<span class="keyword">String</span>()] = append(rMap[rd.sig.R.<span class="keyword">String</span>()], rd)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">				&#125;</span></pre></td></tr></table></figure>
+<p>Signatures是调用getSignatures获得的，前文有提到过</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">signatures := getSignatures(maxHeigth, <span class="built_in">log</span>, db)<span class="comment">//获取签名</span></span></pre></td></tr></table></figure>
+
+<ul>
+<li>第一步，通过循环导出的signatures将签名R赋值给b然后通过过滤器过滤，判断签名是否在过滤器中出现过，如果出现过那么就把它添加到potentialValues中</li>
+<li>第二步，再一次循环signatures判断R是否存在于第一步生成的集合potentialValues中，如果存在将其详细信息添加到rMap中，说一下rMap的类型：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rMap := make(<span class="built_in">map</span>[<span class="built_in">string</span>][]*rData)</span></pre></td></tr></table></figure>
+<p>key是string类型，value是rData类型，所以它的索引中存储的是签名R，value存储的是该签名R的其它信息。最后search函数返回rMap</p>
+<h4 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h4><p>首先给出了区块数据的路径以及数据库类型：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">var (</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">		dataDir = flag.<span class="keyword">String</span>(<span class="string">"datadir"</span>, filepath.Join(btcutil.AppDataDir(<span class="string">"btcd"</span>, <span class="literal">false</span>), <span class="string">"data"</span>), <span class="string">"BTCD: Data directory"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		dbType  = flag.<span class="keyword">String</span>(<span class="string">"dbtype"</span>, <span class="string">"leveldb"</span>, <span class="string">"BTCD: Database backend"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	)</span></pre></td></tr></table></figure>
+<p>之后通过btcdbSetup函数设置了btcdb：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">log</span>, db, dbCleanup := btcdbSetup(*dataDir, *dbType)</span></pre></td></tr></table></figure>
+<p>再调用search函数导出区块中重复R的各个签名以及它们的相关信息</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">duplicates := search(<span class="built_in">log</span>, db)<span class="comment">//返回值是rMap</span></span></pre></td></tr></table></figure>
+<p>通过学习go语言中的map得知，它的数据存储方式是key-value，但是键值是唯一的，所以作者下面的代码我没有看懂，作者新定义一个与导出集合类型一致的map，并且判断里面的value是否有重复？这段代码非常重要，是作者整个思想的核心，可惜我基础知识不够！！！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">realDuplicates := make(<span class="built_in">map</span>[<span class="built_in">string</span>][]*rData)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k, v := range duplicates &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">if</span> len(v) &gt; <span class="number">1</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">			realDuplicates[k] = v</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr></table></figure>
+<p>最后将上文代码中的realDuplicates导出成文件，至此完成了整个比特币网络中相同签名r及其相关信息的导出。</p>
 
     </div>
 
@@ -342,7 +375,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="/http:/zzylydx.github.io/2020/02/06/Bloomfilter/" title="Bloom filter">http://zzylydx.github.io/2020/02/06/Bloomfilter/</a>
+    <a href="/http:/zzylydx.github.io/2020/02/08/Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" title="VerifyTransaction">http://zzylydx.github.io/2020/02/08/Blockchainr源码剖析/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -361,7 +394,7 @@
 </div>
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Bloom/" rel="tag"><i class="fa fa-tag"></i>Bloom</a>
+              <a href="/tags/blockchainr/" rel="tag"><i class="fa fa-tag"></i>blockchainr</a>
           </div>
 
         
@@ -370,13 +403,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/02/05/ECDSA/" rel="prev" title="ECDSA">
-      <i class="fa fa-chevron-left"></i> ECDSA
+    <a href="/2020/02/07/VerifyTransaction/" rel="prev" title="VerifyTransaction">
+      <i class="fa fa-chevron-left"></i> VerifyTransaction
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/02/07/VerifyTransaction/" rel="next" title="VerifyTransaction">
-      VerifyTransaction <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -419,7 +449,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构成"><span class="nav-number">2.</span> <span class="nav-text">构成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">4.</span> <span class="nav-text">应用</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#blockchainr"><span class="nav-number">2.</span> <span class="nav-text">blockchainr</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码整体架构"><span class="nav-number">2.1.</span> <span class="nav-text">代码整体架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#getSignature"><span class="nav-number">2.1.1.</span> <span class="nav-text">getSignature</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#search函数"><span class="nav-number">2.1.2.</span> <span class="nav-text">search函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#main函数"><span class="nav-number">2.1.3.</span> <span class="nav-text">main函数</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
