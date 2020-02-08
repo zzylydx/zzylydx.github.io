@@ -233,7 +233,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/02/08/Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" class="post-title-link" itemprop="url">VerifyTransaction</a>
+            <a href="/2020/02/08/Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/" class="post-title-link" itemprop="url">Blockchainr源码剖析</a>
         </h1>
 
         <div class="post-meta">
@@ -244,7 +244,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-02-08 17:33:40 / 修改时间：17:25:12" itemprop="dateCreated datePublished" datetime="2020-02-08T17:33:40+08:00">2020-02-08</time>
+              <time title="创建时间：2020-02-08 17:33:40 / 修改时间：17:42:47" itemprop="dateCreated datePublished" datetime="2020-02-08T17:33:40+08:00">2020-02-08</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -345,9 +345,9 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">var (</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">		dataDir = flag.<span class="keyword">String</span>(<span class="string">"datadir"</span>, filepath.Join(btcutil.AppDataDir(<span class="string">"btcd"</span>, <span class="literal">false</span>), <span class="string">"data"</span>), <span class="string">"BTCD: Data directory"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		dbType  = flag.<span class="keyword">String</span>(<span class="string">"dbtype"</span>, <span class="string">"leveldb"</span>, <span class="string">"BTCD: Database backend"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	)</span></pre></td></tr></table></figure>
 <p>之后通过btcdbSetup函数设置了btcdb：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">log</span>, db, dbCleanup := btcdbSetup(*dataDir, *dbType)</span></pre></td></tr></table></figure>
-<p>再调用search函数导出区块中重复R的各个签名以及它们的相关信息</p>
+<p>再调用search函数导出区块中重复签名R以及它们的相关信息</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">duplicates := search(<span class="built_in">log</span>, db)<span class="comment">//返回值是rMap</span></span></pre></td></tr></table></figure>
-<p>通过学习go语言中的map得知，它的数据存储方式是key-value，但是键值是唯一的，所以作者下面的代码我没有看懂，作者新定义一个与导出集合类型一致的map，并且判断里面的value是否有重复？这段代码非常重要，是作者整个思想的核心，可惜我基础知识不够！！！</p>
+<p>通过学习go语言中的map得知，它的数据存储方式是key-value，但是键值是唯一的，一个key不能对应多个value，所以作者下面的代码我没有看懂，作者新定义一个与导出集合类型一致的map，并且判断里面的value是否有重复？(value是存储的该签名R相关的信息)这段代码非常重要，是作者整个思想的核心，可惜我基础知识不够！！！</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">realDuplicates := make(<span class="built_in">map</span>[<span class="built_in">string</span>][]*rData)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k, v := range duplicates &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">if</span> len(v) &gt; <span class="number">1</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">			realDuplicates[k] = v</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr></table></figure>
 <p>最后将上文代码中的realDuplicates导出成文件，至此完成了整个比特币网络中相同签名r及其相关信息的导出。</p>
 
