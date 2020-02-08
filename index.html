@@ -244,7 +244,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-02-08 17:33:40 / 修改时间：17:42:47" itemprop="dateCreated datePublished" datetime="2020-02-08T17:33:40+08:00">2020-02-08</time>
+              <time title="创建时间：2020-02-08 17:33:40 / 修改时间：18:08:14" itemprop="dateCreated datePublished" datetime="2020-02-08T17:33:40+08:00">2020-02-08</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -280,7 +280,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.3k</span>
+              <span>2.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -337,19 +337,19 @@
 
 <ul>
 <li>第一步，通过循环导出的signatures将签名R赋值给b然后通过过滤器过滤，判断签名是否在过滤器中出现过，如果出现过那么就把它添加到potentialValues中</li>
-<li>第二步，再一次循环signatures判断R是否存在于第一步生成的集合potentialValues中，如果存在将其详细信息添加到rMap中，说一下rMap的类型：</li>
+<li>第二步，再一次循环signatures判断R是否存在于第一步生成的集合potentialValues中，如果存在将其详细信息添加到rMap中，键值是签名R，也就是说如果存在重复的R就会添加进去多组相关信息。说一下rMap的类型：</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rMap := make(<span class="built_in">map</span>[<span class="built_in">string</span>][]*rData)</span></pre></td></tr></table></figure>
-<p>key是string类型，value是rData类型，所以它的索引中存储的是签名R，value存储的是该签名R的其它信息。最后search函数返回rMap</p>
+<p>key是string类型，value是rData类型的集合，所以它的索引中存储的是签名R，value是一个存储多组R的相关信息的集合，这样的话前面我说的应该也就明白了。最后search函数返回rMap</p>
 <h4 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h4><p>首先给出了区块数据的路径以及数据库类型：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">var (</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">		dataDir = flag.<span class="keyword">String</span>(<span class="string">"datadir"</span>, filepath.Join(btcutil.AppDataDir(<span class="string">"btcd"</span>, <span class="literal">false</span>), <span class="string">"data"</span>), <span class="string">"BTCD: Data directory"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		dbType  = flag.<span class="keyword">String</span>(<span class="string">"dbtype"</span>, <span class="string">"leveldb"</span>, <span class="string">"BTCD: Database backend"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	)</span></pre></td></tr></table></figure>
 <p>之后通过btcdbSetup函数设置了btcdb：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="built_in">log</span>, db, dbCleanup := btcdbSetup(*dataDir, *dbType)</span></pre></td></tr></table></figure>
 <p>再调用search函数导出区块中重复签名R以及它们的相关信息</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">duplicates := search(<span class="built_in">log</span>, db)<span class="comment">//返回值是rMap</span></span></pre></td></tr></table></figure>
-<p>通过学习go语言中的map得知，它的数据存储方式是key-value，但是键值是唯一的，一个key不能对应多个value，所以作者下面的代码我没有看懂，作者新定义一个与导出集合类型一致的map，并且判断里面的value是否有重复？(value是存储的该签名R相关的信息)这段代码非常重要，是作者整个思想的核心，可惜我基础知识不够！！！</p>
+<p>作者新定义一个与导出集合类型一致的map，(value是存储的该签名R相关的信息的一个数组，也就是说存储着多组不同的rData)这段代码非常重要，是作者整个思想的核心，通过循环判断value数组的长度是否大于一，若是则证明签名R是重复的，若不是则签名R不重复。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">realDuplicates := make(<span class="built_in">map</span>[<span class="built_in">string</span>][]*rData)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k, v := range duplicates &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">if</span> len(v) &gt; <span class="number">1</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">			realDuplicates[k] = v</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr></table></figure>
-<p>最后将上文代码中的realDuplicates导出成文件，至此完成了整个比特币网络中相同签名r及其相关信息的导出。</p>
+<p>最后将上文代码中的realDuplicates导出成文件，至此完成了整个比特币网络中相同签名R及其相关信息的导出。</p>
 
       
     </div>
