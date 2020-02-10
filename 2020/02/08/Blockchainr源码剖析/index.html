@@ -64,8 +64,11 @@
 <meta property="og:site_name" content="Stride Max Zz">
 <meta property="og:description" content="前言在2014HITB-Exploiting ECDSA Failures in the Bitcoin Blockchain中他所使用提取签名的方法是通过Bloomfilter实现的，作者提到：  first pass：把签名添加到Bloomfilter里面，作者所使用的是：dablooms，如果过滤器中已经存在了该签名，则把该签名放到一个map中叫做：potentialValues secon">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-08T10:08:14.405Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;sony.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;beidao.png">
+<meta property="og:updated_time" content="2020-02-10T07:15:21.784Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;images&#x2F;sony.png">
 
 <link rel="canonical" href="http://zzylydx.github.io/2020/02/08/Blockchainr%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90/">
 
@@ -243,10 +246,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-02-08 17:33:40 / 修改时间：18:08:14" itemprop="dateCreated datePublished" datetime="2020-02-08T17:33:40+08:00">2020-02-08</time>
+              <time title="创建时间：2020-02-08 17:33:40" itemprop="dateCreated datePublished" datetime="2020-02-08T17:33:40+08:00">2020-02-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-10 15:15:21" itemprop="dateModified" datetime="2020-02-10T15:15:21+08:00">2020-02-10</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -268,7 +277,7 @@
               <span id="busuanzi_value_page_pv"></span>
             </span>
 	    <span class="post-meta-divider">|</span>
-	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 966</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 1.4k</span>
   
   <span class="post-meta-item">
     
@@ -290,14 +299,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.4k</span>
+              <span>3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -313,6 +322,13 @@
 <ul>
 <li>first pass：把签名添加到Bloomfilter里面，作者所使用的是：<a href="https://github.com/bitly/dablooms" target="_blank" rel="noopener">dablooms</a>，如果过滤器中已经存在了该签名，则把该签名放到一个map中叫做：potentialValues</li>
 <li>second pass：重新遍历signature，如果签名存在于potentialValues中，导出签名以及它的其他信息到map：rMap中</li>
+</ul>
+<hr>
+<a id="more"></a>
+<h4 id="小故事"><a href="#小故事" class="headerlink" title="小故事"></a>小故事</h4><p>最近看的这篇PPT，他主要是探讨的在Bitcoin中同一用户使用相同的随机数k会造成私钥的泄漏，进而造成账户金额被盗等重大问题。作者举了几个例子：</p>
+<ul>
+<li>索尼以前就犯过这样的错误：PlayStation 3 只能运行被索尼的进行ECDSA签名的游戏。如果我想为PlayStation 3开发了一个新的游戏，除非我从索尼获得签名值，否则我及时发布了，也运行不了这个游戏。问题是，索尼签名时用了一个静态的k值而不是随机生成的，这就可以根据相同的k进行破解从而得到私钥，进而任意发布游戏。<br><img src="/images/sony.png" alt="Sony&#39;s ECDSA code"></li>
+<li>有人报告了他们的比特币被盗，并发送至<a href="https://blockchain.info/address/1HKywxiL4JziqXrzLKhmB6a74ma6kxbSDj。您可以看到该地址当前包含55.82152538被盗硬币。已经注意到，在客户通过重新使用相同的随机数来不正确地签署交易后的几个小时内，所有硬币都被转移了。" target="_blank" rel="noopener">https://blockchain.info/address/1HKywxiL4JziqXrzLKhmB6a74ma6kxbSDj。您可以看到该地址当前包含55.82152538被盗硬币。已经注意到，在客户通过重新使用相同的随机数来不正确地签署交易后的几个小时内，所有硬币都被转移了。</a><br><img src="/images/beidao.png" alt="stealer"></li>
 </ul>
 <hr>
 <p>下面具体展开对源码的剖析</p>
@@ -360,6 +376,7 @@
 <p>作者新定义一个与导出集合类型一致的map，(value是存储的该签名R相关的信息的一个数组，也就是说存储着多组不同的rData)这段代码非常重要，是作者整个思想的核心，通过循环判断value数组的长度是否大于一，若是则证明签名R是重复的，若不是则签名R不重复。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">realDuplicates := make(<span class="built_in">map</span>[<span class="built_in">string</span>][]*rData)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k, v := range duplicates &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">		<span class="keyword">if</span> len(v) &gt; <span class="number">1</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">			realDuplicates[k] = v</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">		&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">	&#125;</span></pre></td></tr></table></figure>
 <p>最后将上文代码中的realDuplicates导出成文件，至此完成了整个比特币网络中相同签名R及其相关信息的导出。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>作者阐述通过一系列的公式验算以及相关的新闻，我们不难发现这种根据相同的签名R来盗取比特币的行为确实存在过，所以我们知道了k的重要性，一定要保证k值的保密性、唯一性，文章后面一部分作者提到了解决方法，在生成随机数k的时候使用RFC 6979，k=SHA256(d + HASH(m))，通过私钥d，和消息m来生成随机数k，这样的话，d保证了其保密性，hash(m)又保证了其唯一性，所以整个公式已经满足了我们的需要。</p>
 
     </div>
 
@@ -449,7 +466,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#blockchainr"><span class="nav-number">2.</span> <span class="nav-text">blockchainr</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码整体架构"><span class="nav-number">2.1.</span> <span class="nav-text">代码整体架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#getSignature"><span class="nav-number">2.1.1.</span> <span class="nav-text">getSignature</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#search函数"><span class="nav-number">2.1.2.</span> <span class="nav-text">search函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#main函数"><span class="nav-number">2.1.3.</span> <span class="nav-text">main函数</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#小故事"><span class="nav-number">1.0.1.</span> <span class="nav-text">小故事</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#blockchainr"><span class="nav-number">2.</span> <span class="nav-text">blockchainr</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码整体架构"><span class="nav-number">2.1.</span> <span class="nav-text">代码整体架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#getSignature"><span class="nav-number">2.1.1.</span> <span class="nav-text">getSignature</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#search函数"><span class="nav-number">2.1.2.</span> <span class="nav-text">search函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#main函数"><span class="nav-number">2.1.3.</span> <span class="nav-text">main函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -538,7 +555,7 @@ setInterval("createtime()",250);
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020-02-08</span>
+  <span itemprop="copyrightYear">2020-02-10</span>
   <span class="with-love" id="animate">
     <i class="fa fa-smile"></i>
   </span>
@@ -554,7 +571,7 @@ setInterval("createtime()",250);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">13 分钟</span>
+    <span title="站点阅读时长">14 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
   </div>
@@ -563,7 +580,7 @@ setInterval("createtime()",250);
   </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">全站共 6.7k 字</span>
+  <span class="post-count">全站共 7.2k 字</span>
 </div>
 
         
