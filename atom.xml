@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://zzylydx.github.io/"/>
-  <updated>2020-02-11T12:17:32.883Z</updated>
+  <updated>2020-02-13T12:01:39.517Z</updated>
   <id>http://zzylydx.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>BrainWallet背景故事</title>
+    <link href="http://zzylydx.github.io/2020/02/13/BrainWallets%E8%83%8C%E6%99%AF%E6%95%85%E4%BA%8B/"/>
+    <id>http://zzylydx.github.io/2020/02/13/BrainWallets%E8%83%8C%E6%99%AF%E6%95%85%E4%BA%8B/</id>
+    <published>2020-02-13T12:33:40.000Z</published>
+    <updated>2020-02-13T12:01:39.517Z</updated>
+    
+    <content type="html"><![CDATA[<a id="more"></a><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>比特币钱包的主要功能时存储地址和其对应的私钥，它有多种不同的形式，包括桌面软件、移动App，在线服务、硬件、智能卡和纸钱包等，而私钥呢是一个完全随机的数字，一般是256位二进制数，以64位16进制数显示，这对于人脑而言是很难记忆的并且做到安全存储，无论你使用哪种钱包，都始终有可能因网络安全漏洞而丢失私钥。<br>而大脑钱包就是一种解决方案，不需要用户将任何东西放在安全的地方并且仍然能够恢复其私钥，无需存储和保护私钥，而是可以将其存储在人的脑海当中，其使用人工选择的密码或密码短语创建私钥，使用SHA256算法，将其转换成256位二进制数，由于SHA256算法是确定性的方法，用户始终可以使用相同的密码来重新创建私钥，而不需要记住私钥，所以脑钱包的安全性仅取决于密码的不可预测性。</p><h3 id="提出时间"><a href="#提出时间" class="headerlink" title="提出时间"></a>提出时间</h3><p>2012年4月，一个名叫BrainWallet.org的网站出现了，这是一个基于网页的JavaScript比特币地址生成器</p><h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>由于密码产生私钥，所以攻击者只要猜出密码就可以得到私钥并立即盗窃用户的BTC，并且攻击者可以无节制的进行离线猜测候选密码，因为在比特币区块链上，所有交易都是公开透明的，因此攻击者可以提取出所有的地址与自己所猜测的地址进行匹配</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+
+&lt;h2 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h2&gt;&lt;p&gt;比特币钱包的主要功能时存储地址和其对应的私钥，它有多种不同的形式，包括桌面软件、移动App，在线服务、
+      
+    
+    </summary>
+    
+    
+      <category term="小知识" scheme="http://zzylydx.github.io/categories/%E5%B0%8F%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="BrainWallets" scheme="http://zzylydx.github.io/tags/BrainWallets/"/>
+    
+  </entry>
   
   <entry>
     <title>有关Bitcoin的椭圆曲线-secp256k1</title>
