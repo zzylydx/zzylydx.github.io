@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>Speed Optimizations in Bitcoin Key Recovery Attacks</title>
+      <link href="/2020/02/15/Speed%20Optimizations%20in%20Bitcoin%20Key%20Recovery%20Attacks/"/>
+      <url>/2020/02/15/Speed%20Optimizations%20in%20Bitcoin%20Key%20Recovery%20Attacks/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Fixed-Point-Multiplication-Methods"><a href="#Fixed-Point-Multiplication-Methods" class="headerlink" title="Fixed Point Multiplication Methods"></a>Fixed Point Multiplication Methods</h2><h3 id="double-and-add"><a href="#double-and-add" class="headerlink" title="double-and-add"></a>double-and-add</h3><p>在椭圆曲线中计算：$Q=kP$比较容易想到的方法是：double-and-add方法。此方法的想法是将$k$采用二进制表示：<br>&ensp;&ensp;&ensp;&ensp;&ensp;$k=k_0+2k_1+2^2k_2+\cdots+2^mk_m$<br>其中的$[k_0,\cdots,k_m]\epsilon[0,1]$，并且$m$是$k$的位长度，所以在Bitcoin中$m=256$。<br>给出其算法：<br><img src="https://img-blog.csdnimg.cn/2020021516255094.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="double-and-add"><br>如果直接计算$Q=kP$，那我们要计算$k$次点加运算，如果我们设运行一次点加运算的时间为：$A$，那么总的时间是：$kA$。<br>在上面的算法中，$k_i=1$的可能大约是$\frac{m}{2}$，我们假设计算一次倍加所需的时间是：$D$，所以总的运行时间是：$(\frac{m}{2})A+mD$，显然要比之前的运行时间缩短了很多。</p><hr><p>因为$P$是固定不变的，所以我们可以通过预先计算一些依赖于$P$的数据来加速点乘法的操作。例如我们可以预先计算：<br>&ensp;&ensp;&ensp;&ensp;&ensp;$2P,2^2P,\cdots,2^{m-1}P$<br>这样的话在上述算法中$p:=2P$就无需计算了，也就是说只剩了点加运算，我们再分析一些计算时间的话，现在只有：$(\frac{m}{2})A$，很明显又极大的缩短了计算时间。下面我们具体说明这种算法。</p><hr><h3 id="固定基窗口算法"><a href="#固定基窗口算法" class="headerlink" title="固定基窗口算法"></a>固定基窗口算法</h3><p>它的主要特点是先计算预置表，再进行主程序的运算，以使得主程序不需要倍点运算。<br>假定$(K_{d-1},\cdots,K_1,K_0)<em>2^w$是以$k$的以$2^w$为基的表达式，其中$d=[\frac{m}{w}]$，令$Q_j=\sum</em>{i:K_i=j}2^{wi}P$，对于$1\leq j\leq2^w-1$有：<br>&ensp;&ensp;&ensp;&ensp;&ensp;$kP=\sum_{i=0}^{d-1}K_i2^{wi}P=\sum_{j=1}^{2^w-1}(j\sum_{i:K_i=j}2^{wi}P)=\sum_{j=1}^{2^w-1}jQ_j=Q_{2^w-1}+(Q_{2^w-1}+Q_{2^w-2})+\cdots+(Q_{2^w-1}+Q_{2^w-2}+\cdots+Q_1)$<br>在计算$kP$的过程中，仅需计算$Q_j$，然后通过$Q_j$相加即可得出$kP$，而$Q_j$是预置表中的点，且其值为已知，因此通过查询预置表并结合点加运算就可以得到$kP$，从而省略了倍点运算，在忽略预置表的计算时间的情况下，我们可以分析其运行时间，3.1步点加需要的运行时间：$(d-1)A$，3.2步点加所需要的运行时间：$(2^w-1-1)A$，所以中总的运行时间为：$(2^w+d-3)A$<br><img src="https://img-blog.csdnimg.cn/20200215172517981.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>作者通过查阅之前的类似算法发现，这些算法对内存的消耗十分友好，但是作者要追求的是缩短运行时间，耗费多点内存无可厚非，所以作者从这个方向出发提出了一种新的计算方法，此方法将会占用更多的内存资源，也就是在预计算中消耗的。</p><hr><h3 id="新方法"><a href="#新方法" class="headerlink" title="新方法"></a>新方法</h3><p>作者提出$P_j=jP$，在这里$1\leq j\leq2^w-1$，对于每一个$P_j$计算$P_{i,j}=2^{wi}Pj$，整体的算法和固定窗口基算法一样，作者只是将其中一大部分提前计算了出来，虽然会占用较大的内存，但是会极大的提升计算速度。<br><img src="https://img-blog.csdnimg.cn/20200215173744742.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>我们可以发现如果忽略预计算的时间，则需要运行的时间大概是$(d-1)A$，与前面固定基窗口算法相比，可以看出明显提升了计算速度。</p><hr><p>下面给出在不同的窗口宽度w下的测试结果：<br><img src="https://img-blog.csdnimg.cn/2020021517422387.png" alt="在这里插入图片描述"><br>我们可以发现在$w=20$的情况下效果最好！</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 论文 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 椭圆曲线 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>BrainWallet背景故事</title>
       <link href="/2020/02/13/BrainWallets%E8%83%8C%E6%99%AF%E6%95%85%E4%BA%8B/"/>
       <url>/2020/02/13/BrainWallets%E8%83%8C%E6%99%AF%E6%95%85%E4%BA%8B/</url>
