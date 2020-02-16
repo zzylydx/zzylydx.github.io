@@ -416,7 +416,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="有关Bitcoin中部分签名的提取"><a href="#有关Bitcoin中部分签名的提取" class="headerlink" title="有关Bitcoin中部分签名的提取"></a>有关Bitcoin中部分签名的提取</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&ensp;&ensp;&ensp;&ensp;刚刚接触Bitcoin Wallet 里面的构造还不是很清楚，提取和解析指令也不是很熟悉，所以听到这个题目，有些无从下手，于是我先熟悉了bitcoin-cli的指令，例如：getblockhash + 区块高度、getblock + blockhash、getrawtransaction + Tx、decoderawtransaction + (getrawtransaction所获得的字符串)，想要获得签名r主要是通过这些指令，之后我学习了解析交易字符串后的各部分所代表的含义，通过学习精通比特币，我了解到在交易过程中，存在解锁脚本和锁定脚本，结合解析出的信息，我发现里面存在scriptSig这个字段名，但是里面存在两个字段：asm和hex，深入了解后发现，hex代表的是签名脚本的16进制字符串，至此我找到了目标提取字符串。下面具体介绍提取过程。</p>
+          <h2 id="有关Bitcoin中部分签名的提取"><a href="#有关Bitcoin中部分签名的提取" class="headerlink" title="有关Bitcoin中部分签名的提取"></a>有关Bitcoin中部分签名的提取</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&ensp;&ensp;&ensp;&ensp;刚刚接触Bitcoin Wallet 里面的构造还不是很清楚，提取和解析指令也不是很熟悉，所以听到这个题目，有些无从下手，于是我先熟悉了bitcoin-cli的指令，例如：getblockhash + 区块高度、getblock + blockhash、getrawtransaction + Tx、decoderawtransaction + (getrawtransaction所获得的字符串)，想要获得签名r主要是通过这些指令，之后我学习了解析交易字符串后的各部分所代表的含义，通过学习精通比特币，我了解到在交易过程中，存在解锁脚本和锁定脚本，结合解析出的信息，我发现里面存在scriptSig这个字段名，但是里面存在两个字段：asm和hex，深入了解后发现，hex代表的是签名脚本的16进制字符串，至此我找到了目标提取字符串。下面具体介绍提取过程。<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/01/22/%E4%BB%8EBitcoin%E4%B8%AD%E6%8F%90%E5%8F%96%E9%83%A8%E5%88%86%E7%AD%BE%E5%90%8D%E5%AD%97%E6%AE%B5R1/#more" rel="contents">
@@ -529,7 +529,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="区块的结构"><a href="#区块的结构" class="headerlink" title="区块的结构"></a>区块的结构</h2><p>区块分为：区块头和区块体</p>
+          <h2 id="区块的结构"><a href="#区块的结构" class="headerlink" title="区块的结构"></a>区块的结构</h2><p>区块分为：区块头和区块体<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/01/22/bitcoin%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84/#more" rel="contents">

@@ -320,8 +320,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="有关Bitcoin中部分签名的提取"><a href="#有关Bitcoin中部分签名的提取" class="headerlink" title="有关Bitcoin中部分签名的提取"></a>有关Bitcoin中部分签名的提取</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&ensp;&ensp;&ensp;&ensp;刚刚接触Bitcoin Wallet 里面的构造还不是很清楚，提取和解析指令也不是很熟悉，所以听到这个题目，有些无从下手，于是我先熟悉了bitcoin-cli的指令，例如：getblockhash + 区块高度、getblock + blockhash、getrawtransaction + Tx、decoderawtransaction + (getrawtransaction所获得的字符串)，想要获得签名r主要是通过这些指令，之后我学习了解析交易字符串后的各部分所代表的含义，通过学习精通比特币，我了解到在交易过程中，存在解锁脚本和锁定脚本，结合解析出的信息，我发现里面存在scriptSig这个字段名，但是里面存在两个字段：asm和hex，深入了解后发现，hex代表的是签名脚本的16进制字符串，至此我找到了目标提取字符串。下面具体介绍提取过程。</p>
-<a id="more"></a>
+        <h2 id="有关Bitcoin中部分签名的提取"><a href="#有关Bitcoin中部分签名的提取" class="headerlink" title="有关Bitcoin中部分签名的提取"></a>有关Bitcoin中部分签名的提取</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&ensp;&ensp;&ensp;&ensp;刚刚接触Bitcoin Wallet 里面的构造还不是很清楚，提取和解析指令也不是很熟悉，所以听到这个题目，有些无从下手，于是我先熟悉了bitcoin-cli的指令，例如：getblockhash + 区块高度、getblock + blockhash、getrawtransaction + Tx、decoderawtransaction + (getrawtransaction所获得的字符串)，想要获得签名r主要是通过这些指令，之后我学习了解析交易字符串后的各部分所代表的含义，通过学习精通比特币，我了解到在交易过程中，存在解锁脚本和锁定脚本，结合解析出的信息，我发现里面存在scriptSig这个字段名，但是里面存在两个字段：asm和hex，深入了解后发现，hex代表的是签名脚本的16进制字符串，至此我找到了目标提取字符串。下面具体介绍提取过程。<br><a id="more"></a></p>
 <h3 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h3><p>&ensp;&ensp;&ensp;&ensp;提取出比特币钱包所有签名字段中的r，并找到相同的签名r。</p>
 <h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><h5 id="UTXO"><a href="#UTXO" class="headerlink" title="UTXO"></a>UTXO</h5><p>&ensp;&ensp;&ensp;&ensp;比特币交易的基本单位是未经使用的一个交易输出UTXO。它是不可再分割的，在比它的金额还小的交易中就会存在找零行为，即会产生多个输出。实际上，并不存在存储比特币账户金额的地点，只有被所有者锁住的、分散在比特币网络中的UTXO。</p>
 <h5 id="锁定脚本"><a href="#锁定脚本" class="headerlink" title="锁定脚本"></a>锁定脚本</h5><p>&ensp;&ensp;&ensp;&ensp;放在交易输出上的一个障碍，给出了花费UTXO的条件，一般包含条件操作符和限定公钥。</p>

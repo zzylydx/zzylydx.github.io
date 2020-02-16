@@ -314,8 +314,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="比特币中的签名"><a href="#比特币中的签名" class="headerlink" title="比特币中的签名"></a>比特币中的签名</h2><p>签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。<br>那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE。今天我门主要探索的是SIGHASH_ALL中交易的验证过程。</p>
-<a id="more"></a>
+        <h2 id="比特币中的签名"><a href="#比特币中的签名" class="headerlink" title="比特币中的签名"></a>比特币中的签名</h2><p>签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。<br>那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE。今天我门主要探索的是SIGHASH_ALL中交易的验证过程。<br><a id="more"></a></p>
 <h2 id="具体过程"><a href="#具体过程" class="headerlink" title="具体过程"></a>具体过程</h2><p>下图当成两张图片使用<br><img src="/images/TxPrev.png" alt="TxPrev and TxNew"></p>
 <ul>
 <li>创建subscript：从OP_CODESEPARATOR到脚本的最后<br><img src="/images/PrevTx_PKScript.png" alt="PrevTx_PKScript"></li>

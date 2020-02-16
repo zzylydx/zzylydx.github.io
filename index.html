@@ -309,7 +309,7 @@
 <hr>
 <p>因为$P$是固定不变的，所以我们可以通过预先计算一些依赖于$P$的数据来加速点乘法的操作。例如我们可以预先计算：<br>&ensp;&ensp;&ensp;&ensp;&ensp;$2P,2^2P,\cdots,2^{m-1}P$<br>这样的话在上述算法中$p:=2P$就无需计算了，也就是说只剩了点加运算，我们再分析一些计算时间的话，现在只有：$(\frac{m}{2})A$，很明显又极大的缩短了计算时间。下面我们具体说明这种算法。</p>
 <hr>
-<h3 id="固定基窗口算法"><a href="#固定基窗口算法" class="headerlink" title="固定基窗口算法"></a>固定基窗口算法</h3><p>它的主要特点是先计算预置表，再进行主程序的运算，以使得主程序不需要倍点运算。<br>假定$(K_{d-1},\cdots,K_1,K_0)<em>2^w$是以$k$的以$2^w$为基的表达式，其中$d=[\frac{m}{w}]$，令$Q_j=\sum</em>{i:K_i=j}2^{wi}P$，对于$1\leq j\leq2^w-1$有：<br>&ensp;&ensp;&ensp;&ensp;&ensp;$kP=\sum_{i=0}^{d-1}K_i2^{wi}P=\sum_{j=1}^{2^w-1}(j\sum_{i:K_i=j}2^{wi}P)=\sum_{j=1}^{2^w-1}jQ_j=Q_{2^w-1}+(Q_{2^w-1}+Q_{2^w-2})+\cdots+(Q_{2^w-1}+Q_{2^w-2}+\cdots+Q_1)$<br>在计算$kP$的过程中，仅需计算$Q_j$，然后通过$Q_j$相加即可得出$kP$，而$Q_j$是预置表中的点，且其值为已知，因此通过查询预置表并结合点加运算就可以得到$kP$，从而省略了倍点运算，在忽略预置表的计算时间的情况下，我们可以分析其运行时间，3.1步点加需要的运行时间：$(d-1)A$，3.2步点加所需要的运行时间：$(2^w-1-1)A$，所以中总的运行时间为：$(2^w+d-3)A$<br><img src="https://img-blog.csdnimg.cn/20200215172517981.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>作者通过查阅之前的类似算法发现，这些算法对内存的消耗十分友好，但是作者要追求的是缩短运行时间，耗费多点内存无可厚非，所以作者从这个方向出发提出了一种新的计算方法，此方法将会占用更多的内存资源，也就是在预计算中消耗的。</p>
+<h3 id="固定基窗口算法"><a href="#固定基窗口算法" class="headerlink" title="固定基窗口算法"></a>固定基窗口算法</h3><p>它的主要特点是先计算预置表，再进行主程序的运算，以使得主程序不需要倍点运算。<br>假定$(K_{d-1},\cdots,K_1,K_0)_2^w$是以$k$的以$2^w$为基的表达式，其中$d=[\frac{m}{w}]$，令$Q_j=\sum_{i:K_i=j}2^{wi}P$，对于$1\leq j\leq2^w-1$有：<br>&ensp;&ensp;&ensp;&ensp;&ensp;$kP=\sum_{i=0}^{d-1}K_i2^{wi}P=\sum_{j=1}^{2^w-1}(j\sum_{i:K_i=j}2^{wi}P)=\sum_{j=1}^{2^w-1}jQ_j=Q_{2^w-1}+(Q_{2^w-1}+Q_{2^w-2})+\cdots+(Q_{2^w-1}+Q_{2^w-2}+\cdots+Q_1)$<br>在计算$kP$的过程中，仅需计算$Q_j$，然后通过$Q_j$相加即可得出$kP$，而$Q_j$是预置表中的点，且其值为已知，因此通过查询预置表并结合点加运算就可以得到$kP$，从而省略了倍点运算，在忽略预置表的计算时间的情况下，我们可以分析其运行时间，3.1步点加需要的运行时间：$(d-1)A$，3.2步点加所需要的运行时间：$(2^w-1-1)A$，所以中总的运行时间为：$(2^w+d-3)A$<br><img src="https://img-blog.csdnimg.cn/20200215172517981.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>作者通过查阅之前的类似算法发现，这些算法对内存的消耗十分友好，但是作者要追求的是缩短运行时间，耗费多点内存无可厚非，所以作者从这个方向出发提出了一种新的计算方法，此方法将会占用更多的内存资源，也就是在预计算中消耗的。</p>
 <hr>
 <h3 id="新方法"><a href="#新方法" class="headerlink" title="新方法"></a>新方法</h3><p>作者提出$P_j=jP$，在这里$1\leq j\leq2^w-1$，对于每一个$P_j$计算$P_{i,j}=2^{wi}Pj$，整体的算法和固定窗口基算法一样，作者只是将其中一大部分提前计算了出来，虽然会占用较大的内存，但是会极大的提升计算速度。<br><img src="https://img-blog.csdnimg.cn/20200215173744742.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>我们可以发现如果忽略预计算的时间，则需要运行的时间大概是$(d-1)A$，与前面固定基窗口算法相比，可以看出明显提升了计算速度。</p>
 <hr>
@@ -414,7 +414,6 @@
 
       
           <a id="more"></a>
-
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>比特币钱包的主要功能时存储地址和其对应的私钥，它有多种不同的形式，包括桌面软件、移动App，在线服务、硬件、智能卡和纸钱包等，而私钥呢是一个完全随机的数字，一般是256位二进制数，以64位16进制数显示，这对于人脑而言是很难记忆的并且做到安全存储，无论你使用哪种钱包，都始终有可能因网络安全漏洞而丢失私钥。<br>而大脑钱包就是一种解决方案，不需要用户将任何东西放在安全的地方并且仍然能够恢复其私钥，无需存储和保护私钥，而是可以将其存储在人的脑海当中，其使用人工选择的密码或密码短语创建私钥，使用SHA256算法，将其转换成256位二进制数，由于SHA256算法是确定性的方法，用户始终可以使用相同的密码来重新创建私钥，而不需要记住私钥，所以脑钱包的安全性仅取决于密码的不可预测性。</p>
 <h3 id="提出时间"><a href="#提出时间" class="headerlink" title="提出时间"></a>提出时间</h3><p>2012年4月，一个名叫BrainWallet.org的网站出现了，这是一个基于网页的JavaScript比特币地址生成器</p>
 <h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>由于密码产生私钥，所以攻击者只要猜出密码就可以得到私钥并立即盗窃用户的BTC，并且攻击者可以无节制的进行离线猜测候选密码，因为在比特币区块链上，所有交易都是公开透明的，因此攻击者可以提取出所有的地址与自己所猜测的地址进行匹配</p>
@@ -517,7 +516,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>椭圆曲线加密法是一种基于离散对数问题的非对称（或公钥） 加密法， 可以用对椭圆曲线上的点进行加法或乘法运算来表达。在Bitcoin中使用的是secp256k1这条椭圆曲线</p>
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>椭圆曲线加密法是一种基于离散对数问题的非对称（或公钥） 加密法， 可以用对椭圆曲线上的点进行加法或乘法运算来表达。在Bitcoin中使用的是secp256k1这条椭圆曲线<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/02/11/%E6%9C%89%E5%85%B3Bitcoin%E7%9A%84%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF-secp256k1/#more" rel="contents">
@@ -624,7 +623,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>今天粗读了这篇短论文：<a href="https://fc16.ifca.ai/preproceedings/36_Vasek.pdf" target="_blank" rel="noopener">2016The Bitcoin Brain Drain-A Short Paper on the Use and Abuse of Bitcoin Brain Wallets</a>大体了解了在比特币网络中使用BrainWallets的坏处，作者建议不要使用BrainWallets，这也是大脑钱包官网关闭的原因吧</p>
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>今天粗读了这篇短论文：<a href="https://fc16.ifca.ai/preproceedings/36_Vasek.pdf" target="_blank" rel="noopener">2016The Bitcoin Brain Drain-A Short Paper on the Use and Abuse of Bitcoin Brain Wallets</a>大体了解了在比特币网络中使用BrainWallets的坏处，作者建议不要使用BrainWallets，这也是大脑钱包官网关闭的原因吧<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/02/11/Brain%20Wallets/#more" rel="contents">
@@ -849,7 +848,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="比特币中的签名"><a href="#比特币中的签名" class="headerlink" title="比特币中的签名"></a>比特币中的签名</h2><p>签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。<br>那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE。今天我门主要探索的是SIGHASH_ALL中交易的验证过程。</p>
+          <h2 id="比特币中的签名"><a href="#比特币中的签名" class="headerlink" title="比特币中的签名"></a>比特币中的签名</h2><p>签名存在于解锁脚本里面即ScriptSig，主要有身份认证，就是签名是用户使用私钥完成的，所以证明了花的钱是自己的，之后解锁脚本会去验证锁定脚本，进而解锁UTXO，所用到的也是sig和PubKey进行交易验证，验证成功即可完成交易产生新的UTXO。<br>那么在Bitcoin中验证交易的具体过程是怎样的呢？并且签名的类型也是多种：SIGHASH_ALL, SIGHASH_NONE, SIGHASH_SINGLE。今天我门主要探索的是SIGHASH_ALL中交易的验证过程。<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/02/07/VerifyTransaction/#more" rel="contents">
@@ -962,7 +961,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。<br>而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。</p>
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Bloom filter是一个数据结构，它可以用来判断某个元素是否在集合内，具有运行快速、内存占用小的特点。<br>而高效插入和查询的代价就是Bloom filter是一个基于概率的数据结构，它只能告诉我们一个元素绝对不在集合内或可能在集合内，而不能告诉我们一定在集合内。<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/02/06/Bloomfilter/#more" rel="contents">
@@ -1075,7 +1074,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>数字签名算法（DSA）在联邦信息处理标准FIPS中有详细论述，称为数字签名标准。它的安全性基于素域上的离散对数问题。椭圆曲线密码（ECC）由Neal Koblitz和Victor Miller于1985年发明。它可以看作是椭圆曲线对先前基于离散对数问题（DLP）的密码系统的模拟，只是群元素由素域中的元素数换为有限域上的椭圆曲线上的点。椭圆曲线密码体制的安全性基于椭圆曲线离散对数问题（ECDLP）的难解性。椭圆曲线离散对数问题远难于离散对数问题，椭圆曲线密码系统的单位比特强度要远高于传统的离散对数系统。因此在使用较短的密钥的情况下，ECC可以达到于DL系统相同的安全级别。这带来的好处就是计算参数更小，密钥更短，运算速度更快，签名也更加短小。因此椭圆曲线密码尤其适用于处理能力、存储空间、带宽及功耗受限的场合。</p>
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>数字签名算法（DSA）在联邦信息处理标准FIPS中有详细论述，称为数字签名标准。它的安全性基于素域上的离散对数问题。椭圆曲线密码（ECC）由Neal Koblitz和Victor Miller于1985年发明。它可以看作是椭圆曲线对先前基于离散对数问题（DLP）的密码系统的模拟，只是群元素由素域中的元素数换为有限域上的椭圆曲线上的点。椭圆曲线密码体制的安全性基于椭圆曲线离散对数问题（ECDLP）的难解性。椭圆曲线离散对数问题远难于离散对数问题，椭圆曲线密码系统的单位比特强度要远高于传统的离散对数系统。因此在使用较短的密钥的情况下，ECC可以达到于DL系统相同的安全级别。这带来的好处就是计算参数更小，密钥更短，运算速度更快，签名也更加短小。因此椭圆曲线密码尤其适用于处理能力、存储空间、带宽及功耗受限的场合。<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/02/05/ECDSA/#more" rel="contents">
@@ -1182,7 +1181,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Zcash（ZEC）由Zooko Wilcox-O’Hearn于2016年推出，基于Zerocoin协议，Zcash（ZEC）是一种去中心化，开放源代码，以隐私为重点的加密货币，可实现交易的选择性透明化。Zcash交易可以是透明的，也可以通过称为zk-SNARKs的零知识证明来屏蔽。这允许网络维护余额的安全分类帐，而无需透露各方或涉及的金额。代替发布支出授权和交易值，对交易元数据进行加密，并使用zk-SNARK证明没有人是不诚实的。</p>
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Zcash（ZEC）由Zooko Wilcox-O’Hearn于2016年推出，基于Zerocoin协议，Zcash（ZEC）是一种去中心化，开放源代码，以隐私为重点的加密货币，可实现交易的选择性透明化。Zcash交易可以是透明的，也可以通过称为zk-SNARKs的零知识证明来屏蔽。这允许网络维护余额的安全分类帐，而无需透露各方或涉及的金额。代替发布支出授权和交易值，对交易元数据进行加密，并使用zk-SNARK证明没有人是不诚实的。<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/02/04/Zcash%E5%8C%BA%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/#more" rel="contents">
