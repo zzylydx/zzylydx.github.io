@@ -4,6 +4,56 @@
   
     
     <entry>
+      <title>Private Key Recovery Combination Attacks1</title>
+      <link href="/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/"/>
+      <url>/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Solution——BIP032"><a href="#Solution——BIP032" class="headerlink" title="Solution——BIP032"></a>Solution——BIP032</h2><p><img src="https://img-blog.csdnimg.cn/20200218165329379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig1"><br>当$i\geq2^{31}$时，我们称之为硬化子秘钥衍生，如下图：<br><a id="more"></a><br><img src="https://img-blog.csdnimg.cn/20200218171812998.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig2"><br>对于solution1，如果我们知道扩展私钥$k_1$，并且知道该私钥的相对位置，那么我们可以通过$K,xc$(链码)计算得到$y_1、y_2$，由于：$y_1<em>k \, mod \, q=k_1$，所以我们可以解出$k$，进而可以计算出：$y_2</em>k\, mod \,q=y_2$，依次类推进而计算出所有的私钥。同理可证solution2。</p><h2 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h2><p>如果攻击者知道$Extended\:Public\:Key\:K||xc$并且相同的随机数被处在同一层中的两个用户使用了，知道他们的相对路径，那么可以计算出对应的：$y_L$，我们假设用户1对应的是：$y_1$，用户2对应的是：$y_2$所以两个对应的私钥就是：$ky_1、ky_2$，得到：<br>$as_1=(H(m1)+rky_1)\,mod\,q$<br>$as_2=(H(m2)+rky_2)\,mod\,q$<br>将第一个等式中的$a$表示出来带入第二个等式得到：<br>$k=\frac{H(m2)s_1-H(m1)s_2}{ry_1s_2-ry_2s_1}mod\:q$<br>这样我们就可以解得私钥的值。</p><hr><p>如果攻击者知道两个不同层次的：$K,xc$以及用户的相对位置，并且随机数$a、b$都各自使用了一次，一共有四个用户。<br>对于solution1因为我们知道用户的相对位置，我们可以计算出：$ky_1，k’y_2，ky_3，k’y_4$并且得到如下几个式子：</p><p>$as_1=(H(m1)+r_aky_1)\,mod\,q$<br>$as_2=(H(m2)+r_ak’y_2)\,mod\,q$<br>$bs_3=(H(m3)+r_bky_3)\,mod\,q$<br>$bs_4=(H(m4)+r_bky’_1)\,mod\,q$<br>$ky_1s_2-k’y_2s_2=\frac{H(m_2)s_1+H(m1)s_2}{r_a}mod\,q$<br>$ky_3s_4-k’y_4s_3=\frac{H(m_4)s_3+H(m3)s_4}{r_b}mod\,q$<br>两个方程可以解出$k$和$k’$，与之前类似的方法即可解出所有私钥。solution2同理。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 论文 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HD钱包 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Private Key Recovery Combination Attacks1</title>
+      <link href="/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks/"/>
+      <url>/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Bitcoin-and-Key-Management"><a href="#Bitcoin-and-Key-Management" class="headerlink" title="Bitcoin and Key Management"></a>Bitcoin and Key Management</h2><p>比特币提供了匿名性，但是匿名性很差，使用多个私钥会获得较好的匿名性。但是如果比特币钱包包含的是随机生成的私钥，将会产生大量的私钥，在实际中很难管理，并且占用大量储存空间。所以找到一个好的解决方法至关重要。在较早的一批比特币客户端中，使用的是随机生成私钥的集合的钱包，这种钱包被称为零型非确定型钱包，它的缺点就是如果你生成很多私钥，就必须要保存它们的副本，不然私钥丢失里面的比特币也将付诸东流，并且这种情况与避免重复使用地址相冲突，地址关联多重交易和对方地址重复使用会减少隐私，也就是降低匿名性，所以这种钱包不是一种很好的选择，下面为大家介绍解决方法——确定性钱包<br><a id="more"></a></p><h2 id="确定性的私钥管理"><a href="#确定性的私钥管理" class="headerlink" title="确定性的私钥管理"></a>确定性的私钥管理</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul><li>限制了私钥的公开程度，并且限制了攻击者可以针对传统算法攻击和旁路攻击进行处理</li><li>大大节省了存储空间</li></ul><h3 id="Type1"><a href="#Type1" class="headerlink" title="Type1"></a>Type1</h3><p><img src="https://img-blog.csdnimg.cn/20200217172210850.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig1"><br>通过对种子和索引$n$哈希生成索引所对应的私钥。我们可以利用种子来将所有的私钥恢复，所以在备份的时候只需要备份种子就可以了。这样的话极大减少了备份私钥的空间，并且有利于钱包的管理，但是也有致命性的缺点如果种子被盗取，那么将造成钱包中所有私钥的泄漏！！！<br>我们的目标是希望能够生成用于接收大量不同交易的比特币唯一私钥，这将增加交易的匿名性。<br>这种类型我们还以用作种子生成主私钥，然后主私钥生成子私钥，以此类推，子私钥可以生成孙私钥，这样的话就可以得到无穷无尽并且很方便管理的私钥群。并且不同的分支用作不同的用途，将更加方便我们的生活。</p><hr><h3 id="Type2"><a href="#Type2" class="headerlink" title="Type2"></a>Type2</h3><p><img src="https://img-blog.csdnimg.cn/20200217174118175.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig2"><br>我们希望有2个推导函数。例如，无论是通过Public派生函数计算还是从SK3计算得出，PK3都应该相同，并且公共种子不应泄露私有种子或任何私有密钥，所有的推导函数都由单向函数来完成。</p><hr><p>除了公钥、私钥外，它们还有其它的链值，如下图，因此，知道ECDSA的私钥也不能解出其它的私钥，但是如果seed遭到泄漏之后，那么会造成所有私钥的泄漏，造成严重的后果。并且允许为单个交易生成单个私钥。<br><img src="https://img-blog.csdnimg.cn/20200217175920356.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig3"></p><h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><h3 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h3><p>我们将扩展私钥定义为：$Extended Private Key=(private key +xc)$<br>扩展公钥是：$Extended Public Key=(Extended Private Key+xc)$<br>定义$N$为扩展私钥转换成扩展公钥的操作，所以我们有：<br>$N (k||xc) = (k.G||xc)$</p><h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p><img src="https://img-blog.csdnimg.cn/20200217182307317.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig4"><br>其中HM是HMAC，利用哈希算法，以一个秘钥和一个消息为输入生成一个消息摘要作为输出。<br>前面的公式：$N(k||xc)=(K||xc)$，可以转换成：$N(k_i,c_i)=(K_i,c_i)$<br>具体过程：$k_i.G=(y_{l_i}*k_L).G=y_{l_i}.(k_L.G)=y_{l_i}.K_L=K_i$ 所以可以得到上面的结果，其中定向的路径都可以生成完全相同的公钥</p><hr><p><img src="https://img-blog.csdnimg.cn/20200217183527914.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig5"><br>其中的具体过程：$k_i.G=(y_{L_i}+k_L).G=y_{L_i}.G+k_L.G=y_{L_i}.G+K_L=K_i$<br>即可以得到：$N(k_i,c_i)=(K_i,c_i)$</p><hr><h2 id="HD钱包"><a href="#HD钱包" class="headerlink" title="HD钱包"></a>HD钱包</h2><p><img src="https://img-blog.csdnimg.cn/20200218135414557.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig6"><br>分层确定性钱包使用CKD（child key derivation)方程去从母密钥衍生出子密钥。<br>子秘钥的衍生方程式基于单向哈希方程，主要有以下几部分组成：</p><ul><li>一个母私钥</li><li>一个叫做链码的种子</li><li>一个索引号<br>所以只有私钥和索引并不能衍生出所有的私钥，还需要链码。<br><img src="https://img-blog.csdnimg.cn/20200218140200595.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig7"></li></ul><h3 id="扩展密钥-BIP32"><a href="#扩展密钥-BIP32" class="headerlink" title="扩展密钥(BIP32)"></a>扩展密钥(BIP32)</h3><p>为了防止密钥衍生仅依赖于自身，协议中引入了一个256位的熵，称为链码。$key||chain_{code}$<br>衍生：$(key_{child},chain_{codechild})=CKD((key_{parent},chain_{codeparent}),index)$ 这是扩展私钥的衍生过程对应于上图中的数据。扩展公钥的衍生过程与其同理。<br>普通衍生的索引范围是：$0-(2^{31}-1)$<br>如果子私钥泄漏，且扩展公钥中含有链码，所以攻击者就可以利用私钥+链码衍生出所有的后续私钥，同时可以利用链码和子私钥猜测母私钥。所以又出现了“硬化子秘钥的衍生”</p><h3 id="硬化子秘钥的衍生"><a href="#硬化子秘钥的衍生" class="headerlink" title="硬化子秘钥的衍生"></a>硬化子秘钥的衍生</h3><p>它是利用母私钥直接去计算子链码，而不是利用母公钥，这样就使得链码不会暴露，所以也就无法利用私钥去进一步衍生其他私钥。<br><img src="https://img-blog.csdnimg.cn/20200218142452868.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig8"><br>硬化衍生索引的范围是：$2^{31}-2^{32}$</p><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>公式：母私钥生成子私钥<br>$key_i,chain_{code_i}=CKD((key_{parent},chain_{code_{parent}}),i)$</p><ul><li>如果$i \geq2^{31}$，要进行硬化衍生，获得新序列：<br>$I=HMAC-SHA512(key=chain_{code_{parent}},data=0x00||ser_{256}(key_{parent})||ser_{32}(i))$</li><li>如果$i\leq2^{31}$，则要进行普通衍生获得新序列：<br>$I=HMAC-SHA512(key=chain_{code_{parent}},data=ser_p(point(key_{parent}))||ser_{32}(i))$</li><li>最后将$I$分为两部分$(I_L,I_R)=I$<br>$I_R$即为子密钥的$chain_{code}$<br>$I_L$和母私钥及索引可以推算出子私钥</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 论文 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HD钱包 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Speed Optimizations in Bitcoin Key Recovery Attacks</title>
       <link href="/2020/02/15/Speed%20Optimizations%20in%20Bitcoin%20Key%20Recovery%20Attacks/"/>
       <url>/2020/02/15/Speed%20Optimizations%20in%20Bitcoin%20Key%20Recovery%20Attacks/</url>

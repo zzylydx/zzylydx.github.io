@@ -56,17 +56,21 @@
   };
 </script>
 
-  <meta name="description" content="记录成长的点滴">
-<meta property="og:type" content="website">
-<meta property="og:title" content="分类">
-<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;categories&#x2F;index.html">
+  <meta name="description" content="Solution——BIP032当$i\geq2^{31}$时，我们称之为硬化子秘钥衍生，如下图：">
+<meta name="keywords" content="HD钱包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Private Key Recovery Combination Attacks1">
+<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;02&#x2F;18&#x2F;Private%20Key%20Recovery%20Combination%20Attacks2&#x2F;index.html">
 <meta property="og:site_name" content="Stride Max Zz">
-<meta property="og:description" content="记录成长的点滴">
+<meta property="og:description" content="Solution——BIP032当$i\geq2^{31}$时，我们称之为硬化子秘钥衍生，如下图：">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-22T14:01:41.455Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200218165329379.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200218171812998.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2020-02-18T11:24:14.783Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200218165329379.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
 
-<link rel="canonical" href="http://zzylydx.github.io/categories/">
+<link rel="canonical" href="http://zzylydx.github.io/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/">
 
 
 <script id="page-configurations">
@@ -74,14 +78,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
-    isPage: true,
+    isPost: true,
+    isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>分类 | Stride Max Zz
-  </title>
+  <title>Private Key Recovery Combination Attacks1 | Stride Max Zz</title>
   
 
 
@@ -212,52 +215,163 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
           <div class="content">
             
 
   <div class="posts-expand">
-    
-    
-    
-    <div class="post-block" lang="zh-CN">
-      <header class="post-header">
-
-<h1 class="post-title" itemprop="name headline">分类
-</h1>
-
-<div class="post-meta">
+      
   
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/">
 
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/T.jpg">
+      <meta itemprop="name" content="zzy">
+      <meta itemprop="description" content="记录成长的点滴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Stride Max Zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Private Key Recovery Combination Attacks1
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-02-18 18:33:41 / 修改时间：19:24:14" itemprop="dateCreated datePublished" datetime="2020-02-18T18:33:41+08:00">2020-02-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87/" itemprop="url" rel="index">
+                    <span itemprop="name">论文</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+	    <span class="post-meta-divider">|</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 430</span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    
+      <a title="changyan" href="/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/#SOHUCS" itemprop="discussionUrl">
+        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/02/18/Private Key Recovery Combination Attacks2/" itemprop="commentCount"></span>
+      </a>
+    
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>909</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Solution——BIP032"><a href="#Solution——BIP032" class="headerlink" title="Solution——BIP032"></a>Solution——BIP032</h2><p><img src="https://img-blog.csdnimg.cn/20200218165329379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig1"><br>当$i\geq2^{31}$时，我们称之为硬化子秘钥衍生，如下图：<br><a id="more"></a><br><img src="https://img-blog.csdnimg.cn/20200218171812998.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig2"><br>对于solution1，如果我们知道扩展私钥$k_1$，并且知道该私钥的相对位置，那么我们可以通过$K,xc$(链码)计算得到$y_1、y_2$，由于：$y_1<em>k \, mod \, q=k_1$，所以我们可以解出$k$，进而可以计算出：$y_2</em>k\, mod \,q=y_2$，依次类推进而计算出所有的私钥。同理可证solution2。</p>
+<h2 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h2><p>如果攻击者知道$Extended\:Public\:Key\:K||xc$并且相同的随机数被处在同一层中的两个用户使用了，知道他们的相对路径，那么可以计算出对应的：$y_L$，我们假设用户1对应的是：$y_1$，用户2对应的是：$y_2$所以两个对应的私钥就是：$ky_1、ky_2$，得到：<br>$as_1=(H(m1)+rky_1)\,mod\,q$<br>$as_2=(H(m2)+rky_2)\,mod\,q$<br>将第一个等式中的$a$表示出来带入第二个等式得到：<br>$k=\frac{H(m2)s_1-H(m1)s_2}{ry_1s_2-ry_2s_1}mod\:q$<br>这样我们就可以解得私钥的值。</p>
+<hr>
+<p>如果攻击者知道两个不同层次的：$K,xc$以及用户的相对位置，并且随机数$a、b$都各自使用了一次，一共有四个用户。<br>对于solution1因为我们知道用户的相对位置，我们可以计算出：$ky_1，k’y_2，ky_3，k’y_4$并且得到如下几个式子：</p>
+<p>$as_1=(H(m1)+r_aky_1)\,mod\,q$<br>$as_2=(H(m2)+r_ak’y_2)\,mod\,q$<br>$bs_3=(H(m3)+r_bky_3)\,mod\,q$<br>$bs_4=(H(m4)+r_bky’_1)\,mod\,q$<br>$ky_1s_2-k’y_2s_2=\frac{H(m_2)s_1+H(m1)s_2}{r_a}mod\,q$<br>$ky_3s_4-k’y_4s_3=\frac{H(m_4)s_3+H(m3)s_4}{r_b}mod\,q$<br>两个方程可以解出$k$和$k’$，与之前类似的方法即可解出所有私钥。solution2同理。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>zzy
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="/http:/zzylydx.github.io/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/" title="Private Key Recovery Combination Attacks1">http://zzylydx.github.io/2020/02/18/Private Key Recovery Combination Attacks2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
 </div>
 
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-            <div class="category-all-title">
-              目前共计 5 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Bitcoin/">Bitcoin</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8C%BA%E5%9D%97%E7%BB%93%E6%9E%84/">区块结构</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B0%8F%E7%9F%A5%E8%AF%86/">小知识</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BA%E6%96%87/">论文</a><span class="category-list-count">3</span></li></ul>
-            </div>
+      <div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/HD%E9%92%B1%E5%8C%85/" rel="tag"><i class="fa fa-tag"></i>HD钱包</a>
           </div>
-        
-      </div>
-      
-      
-      
-    </div>
-    
 
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks/" rel="prev" title="Private Key Recovery Combination Attacks1">
+      <i class="fa fa-chevron-left"></i> Private Key Recovery Combination Attacks1
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
     
-    
-    
+  </article>
+  
+  
+  
+
   </div>
 
 
@@ -292,6 +406,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution——BIP032"><span class="nav-number">1.</span> <span class="nav-text">Solution——BIP032</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#攻击"><span class="nav-number">2.</span> <span class="nav-text">攻击</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -479,6 +594,56 @@ setInterval("createtime()",250);
   
 
   
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
 
   
 
