@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://zzylydx.github.io/"/>
-  <updated>2020-02-18T11:24:14.783Z</updated>
+  <updated>2020-02-26T12:40:05.111Z</updated>
   <id>http://zzylydx.github.io/</id>
   
   <author>
@@ -17,11 +17,37 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Private Key Recovery Combination Attacks1</title>
+    <title>使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据</title>
+    <link href="http://zzylydx.github.io/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/"/>
+    <id>http://zzylydx.github.io/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/</id>
+    <published>2020-02-26T10:33:41.000Z</published>
+    <updated>2020-02-26T12:40:05.111Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Nmap工具"><a href="#Nmap工具" class="headerlink" title="Nmap工具"></a>Nmap工具</h2><h3 id="相关脚本"><a href="#相关脚本" class="headerlink" title="相关脚本"></a>相关脚本</h3><p><a href="https://svn.nmap.org/nmap/scripts/ssh-hostkey.nse" target="_blank" rel="noopener">ssh-hostkey</a>显示SSH主机的公钥<br><a href="https://svn.nmap.org/nmap/scripts/ssl-enum-ciphers.nse" target="_blank" rel="noopener">ssl-enum-ciphers</a>该脚本重复启动SSLv3 / TLS连接，每次在记录主机是否接受时都尝试使用新的密码或压缩程序。最终结果是服务器接受的所有密码套件和压缩器的列表，主要就是返回的主机所使用的密码套件和椭圆曲线。<br><a href="https://svn.nmap.org/nmap/scripts/ssl-cert.nse" target="_blank" rel="noopener">ssl-cert</a>检索服务器的SSL证书。我主要通过这个脚本获得了以MD5和sha-1输出的签名，但是我还没搞懂对谁签的名。</p><h4 id="用法示例"><a href="#用法示例" class="headerlink" title="用法示例"></a>用法示例</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap host --script ssh-hostkey --script-args ssh_hostkey=sha256</span></pre></td></tr></table></figure><p>返回的是以sha256形式输出的Hostkey，示例如下图：<br><img src="https://img-blog.csdnimg.cn/20200226195740230.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="hostkey"></p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap -sV --script ssl-<span class="keyword">enum</span>-ciphers -p <span class="number">443</span> &lt;主机&gt;</span></pre></td></tr></table></figure><p>下面展示一下示例图：<br><img src="https://img-blog.csdnimg.cn/202002262010499.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="ciper"></p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap -p443 --script ssl-cert &lt;主机&gt;</span></pre></td></tr></table></figure><p>下面给出示例图：<br><img src="https://img-blog.csdnimg.cn/2020022620205383.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="cert"></p><h3 id="注"><a href="#注" class="headerlink" title="注"></a>注</h3><ul><li>ssh协议对应的端口号是：22</li><li>TLS\SSL对应的端口号是：443，使用的协议是：https</li><li>还有导出到文件的代码：</li></ul><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap --script ssl-<span class="keyword">enum</span>-ciphers -p <span class="number">443</span> -iL 使用的文件名加后缀 -oN 导出的文件名加后缀</span></pre></td></tr></table></figure><h3 id="nmap的安装来源"><a href="#nmap的安装来源" class="headerlink" title="nmap的安装来源"></a>nmap的安装来源</h3><p><a href="https://nmap.org/download.html" target="_blank" rel="noopener">nmap</a>直接安装就可以，同时也支持window系统</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Nmap工具&quot;&gt;&lt;a href=&quot;#Nmap工具&quot; class=&quot;headerlink&quot; title=&quot;Nmap工具&quot;&gt;&lt;/a&gt;Nmap工具&lt;/h2&gt;&lt;h3 id=&quot;相关脚本&quot;&gt;&lt;a href=&quot;#相关脚本&quot; class=&quot;headerlink&quot; title=&quot;相
+      
+    
+    </summary>
+    
+    
+      <category term="Nmap" scheme="http://zzylydx.github.io/categories/Nmap/"/>
+    
+    
+      <category term="Nmap" scheme="http://zzylydx.github.io/tags/Nmap/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Private Key Recovery Combination Attacks2</title>
     <link href="http://zzylydx.github.io/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/"/>
     <id>http://zzylydx.github.io/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/</id>
     <published>2020-02-18T10:33:41.000Z</published>
-    <updated>2020-02-18T11:24:14.783Z</updated>
+    <updated>2020-02-24T04:47:04.456Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Solution——BIP032"><a href="#Solution——BIP032" class="headerlink" title="Solution——BIP032"></a>Solution——BIP032</h2><p><img src="https://img-blog.csdnimg.cn/20200218165329379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig1"><br>当$i\geq2^{31}$时，我们称之为硬化子秘钥衍生，如下图：<br><a id="more"></a><br><img src="https://img-blog.csdnimg.cn/20200218171812998.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="fig2"><br>对于solution1，如果我们知道扩展私钥$k_1$，并且知道该私钥的相对位置，那么我们可以通过$K,xc$(链码)计算得到$y_1、y_2$，由于：$y_1<em>k \, mod \, q=k_1$，所以我们可以解出$k$，进而可以计算出：$y_2</em>k\, mod \,q=y_2$，依次类推进而计算出所有的私钥。同理可证solution2。</p><h2 id="攻击"><a href="#攻击" class="headerlink" title="攻击"></a>攻击</h2><p>如果攻击者知道$Extended\:Public\:Key\:K||xc$并且相同的随机数被处在同一层中的两个用户使用了，知道他们的相对路径，那么可以计算出对应的：$y_L$，我们假设用户1对应的是：$y_1$，用户2对应的是：$y_2$所以两个对应的私钥就是：$ky_1、ky_2$，得到：<br>$as_1=(H(m1)+rky_1)\,mod\,q$<br>$as_2=(H(m2)+rky_2)\,mod\,q$<br>将第一个等式中的$a$表示出来带入第二个等式得到：<br>$k=\frac{H(m2)s_1-H(m1)s_2}{ry_1s_2-ry_2s_1}mod\:q$<br>这样我们就可以解得私钥的值。</p><hr><p>如果攻击者知道两个不同层次的：$K,xc$以及用户的相对位置，并且随机数$a、b$都各自使用了一次，一共有四个用户。<br>对于solution1因为我们知道用户的相对位置，我们可以计算出：$ky_1，k’y_2，ky_3，k’y_4$并且得到如下几个式子：</p><p>$as_1=(H(m1)+r_aky_1)\,mod\,q$<br>$as_2=(H(m2)+r_ak’y_2)\,mod\,q$<br>$bs_3=(H(m3)+r_bky_3)\,mod\,q$<br>$bs_4=(H(m4)+r_bky’_1)\,mod\,q$<br>$ky_1s_2-k’y_2s_2=\frac{H(m_2)s_1+H(m1)s_2}{r_a}mod\,q$<br>$ky_3s_4-k’y_4s_3=\frac{H(m_4)s_3+H(m3)s_4}{r_b}mod\,q$<br>两个方程可以解出$k$和$k’$，与之前类似的方法即可解出所有私钥。solution2同理。</p>]]></content>
     
