@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>SSL_TLS握手</title>
+      <link href="/2020/02/28/SSL_TLS%E6%8F%A1%E6%89%8B/"/>
+      <url>/2020/02/28/SSL_TLS%E6%8F%A1%E6%89%8B/</url>
+      
+        <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>最近在看一篇论文，<a href="https://eprint.iacr.org/2013/734.pd" target="_blank" rel="noopener">Elliptic Curve Cryptography in Practicef</a>里面联系到TLS协议的各方面东西，所以去了解了一下SSL\TLS协议握手时候的大概流程，现在把它记录下来。<br><a id="more"></a></p><h2 id="证书"><a href="#证书" class="headerlink" title="证书"></a>证书</h2><p>首先简单说一下什么是证书，为了证实服务器的身份，并确保他不是攻击者，证书是由第三方可信机构颁发的，我们称之为：CA，CA用其私钥对证书签名，这样用户可以对服务器发送过来的证书进行验证。证书中包含服务器的公钥，可信第三方的签名等东西</p><h2 id="握手的大概过程"><a href="#握手的大概过程" class="headerlink" title="握手的大概过程"></a>握手的大概过程</h2><p>客户端发送许多规范为了知道服务器使用的规范：</p><ul><li>服务器正在运行的哪个版本的SSL/TLS</li><li>服务器使用的是什么密码套件</li><li>服务器使用什么压缩方法<br>通过OpenSSL操作的话一般使用如下命令例：</li></ul><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">openssl s_client -<span class="built_in">connect</span> the.host.name:<span class="number">443</span></span></pre></td></tr></table></figure><p>当然里面还可以添加很多东西，有空再整理吧！<br>这样的话服务器收到客户端发送的<code>s_client</code>后从中选择一个支持的密码套件并选择一个压缩方法，之后向客户端发送它的证书，客户端验证证书并确定此服务器确实是他声称身份而非中间人，之后交换秘钥。从现在开始，所有通信将会被加密，并将加密且经过身份验证的消息发送到服务器，服务器验证身份正确并且消息可以正确解密，然后它返回一条消息客户端也将对其进行验证至此握手已经完成。</p><h2 id="与论文中内容的联系"><a href="#与论文中内容的联系" class="headerlink" title="与论文中内容的联系"></a>与论文中内容的联系</h2><p>作者在TLS部分，测试服务器所使用的密码套件以及椭圆曲线的时候，若服务器接收则将其密码套件及曲线从列表中移除（因为作者只做与椭圆曲线有关的实验，所以里面只包含与椭圆曲线有关的密码套件及曲线），然后作者采用<code>Event-driven</code>程序，再次发送消息，直到不能连接，即列表为空或者列表中的密码套件及曲线已经不能支持服务器，这时将不能得到有效反馈，至此作者通过这种方法测试出了服务器所使用的所有密码套件以及曲线。</p><h2 id="小知识"><a href="#小知识" class="headerlink" title="小知识"></a>小知识</h2><p>ECDH：秘钥交换协议</p><h3 id="ECDH与ECDHE的区别"><a href="#ECDH与ECDHE的区别" class="headerlink" title="ECDH与ECDHE的区别"></a>ECDH与ECDHE的区别</h3><ul><li>ECDHE是E = Ephemeral版本，您在<br>每次握手时都会获得不同的DH密钥 。</li><li>ECDH具有固定的DH密钥；握手的一侧不会从<br>一个实例更改为 另一个实例。</li><li>ECDHE为您提供保密性；ECDH没有。</li><li>ECDHE比ECDH效率低；它需要更多的加密操作。</li><li>它们在握手验证方式上也有所不同。（ECDH是<br>隐式的，而ECDHE是显式的。）</li></ul><h2 id="pS"><a href="#pS" class="headerlink" title="pS"></a>pS</h2><p>明天搞一下详解</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 握手 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> TLS/SSL </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据</title>
       <link href="/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/"/>
       <url>/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/</url>
