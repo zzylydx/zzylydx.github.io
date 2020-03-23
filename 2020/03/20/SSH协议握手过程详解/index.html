@@ -56,22 +56,27 @@
   };
 </script>
 
-  <meta name="description" content="Nmap工具相关脚本ssh-hostkey显示SSH主机的公钥ssl-enum-ciphers该脚本重复启动SSLv3 &#x2F; TLS连接，每次在记录主机是否接受时都尝试使用新的密码或压缩程序。最终结果是服务器接受的所有密码套件和压缩器的列表，主要就是返回的主机所使用的密码套件和椭圆曲线。ssl-cert检索服务器的SSL证书。我主要通过这个脚本获得了以MD5和sha-1输出的签名，但是我还没搞懂对谁">
-<meta name="keywords" content="Nmap">
+  <meta name="description" content="简介ssh通过创建安全隧道来实现ssh客户端与服务器之间的连接，它的主要用途是连接远程服务器然后在上面执行指令。">
+<meta name="keywords" content="ssh协议">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据">
-<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;02&#x2F;26&#x2F;%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE&#x2F;index.html">
+<meta property="og:title" content="SSH协议握手过程详解">
+<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;03&#x2F;20&#x2F;SSH%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3&#x2F;index.html">
 <meta property="og:site_name" content="Stride Max Zz">
-<meta property="og:description" content="Nmap工具相关脚本ssh-hostkey显示SSH主机的公钥ssl-enum-ciphers该脚本重复启动SSLv3 &#x2F; TLS连接，每次在记录主机是否接受时都尝试使用新的密码或压缩程序。最终结果是服务器接受的所有密码套件和压缩器的列表，主要就是返回的主机所使用的密码套件和椭圆曲线。ssl-cert检索服务器的SSL证书。我主要通过这个脚本获得了以MD5和sha-1输出的签名，但是我还没搞懂对谁">
+<meta property="og:description" content="简介ssh通过创建安全隧道来实现ssh客户端与服务器之间的连接，它的主要用途是连接远程服务器然后在上面执行指令。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200226195740230.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;202002262010499.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2020022620205383.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2020-02-26T12:46:35.678Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321115848326.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321120339156.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321120755201.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321121003478.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321121021869.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321121448908.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2020032112150720.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321122304654.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2020-03-23T10:20:42.677Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200226195740230.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200321115848326.png">
 
-<link rel="canonical" href="http://zzylydx.github.io/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/">
+<link rel="canonical" href="http://zzylydx.github.io/2020/03/20/SSH%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/">
 
 
 <script id="page-configurations">
@@ -85,7 +90,7 @@
   };
 </script>
 
-  <title>使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据 | Stride Max Zz</title>
+  <title>SSH协议握手过程详解 | Stride Max Zz</title>
   
 
 
@@ -225,7 +230,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/03/20/SSH%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/T.jpg">
@@ -238,7 +243,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据
+          SSH协议握手过程详解
         </h1>
 
         <div class="post-meta">
@@ -247,18 +252,24 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-02-26 18:33:41 / 修改时间：20:46:35" itemprop="dateCreated datePublished" datetime="2020-02-26T18:33:41+08:00">2020-02-26</time>
+              <time title="创建时间：2020-03-20 18:33:41" itemprop="dateCreated datePublished" datetime="2020-03-20T18:33:41+08:00">2020-03-20</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 18:20:42" itemprop="dateModified" datetime="2020-03-23T18:20:42+08:00">2020-03-23</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Nmap/" itemprop="url" rel="index">
-                    <span itemprop="name">Nmap</span>
+                  <a href="/categories/ssh/" itemprop="url" rel="index">
+                    <span itemprop="name">ssh</span>
                   </a>
                 </span>
             </span>
@@ -272,7 +283,7 @@
               <span id="busuanzi_value_page_pv"></span>
             </span>
 	    <span class="post-meta-divider">|</span>
-	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 295</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 705</span>
   
   <span class="post-meta-item">
     
@@ -282,8 +293,8 @@
       <span class="post-meta-item-text">Changyan：</span>
     
     
-      <a title="changyan" href="/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/#SOHUCS" itemprop="discussionUrl">
-        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/02/26/使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据/" itemprop="commentCount"></span>
+      <a title="changyan" href="/2020/03/20/SSH%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/#SOHUCS" itemprop="discussionUrl">
+        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/03/20/SSH协议握手过程详解/" itemprop="commentCount"></span>
       </a>
     
   </span>
@@ -294,7 +305,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>546</span>
+              <span>924</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -313,20 +324,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Nmap工具"><a href="#Nmap工具" class="headerlink" title="Nmap工具"></a>Nmap工具</h2><h3 id="相关脚本"><a href="#相关脚本" class="headerlink" title="相关脚本"></a>相关脚本</h3><p><a href="https://svn.nmap.org/nmap/scripts/ssh-hostkey.nse" target="_blank" rel="noopener">ssh-hostkey</a>显示SSH主机的公钥<br><a href="https://svn.nmap.org/nmap/scripts/ssl-enum-ciphers.nse" target="_blank" rel="noopener">ssl-enum-ciphers</a>该脚本重复启动SSLv3 / TLS连接，每次在记录主机是否接受时都尝试使用新的密码或压缩程序。最终结果是服务器接受的所有密码套件和压缩器的列表，主要就是返回的主机所使用的密码套件和椭圆曲线。<br><a href="https://svn.nmap.org/nmap/scripts/ssl-cert.nse" target="_blank" rel="noopener">ssl-cert</a>检索服务器的SSL证书。我主要通过这个脚本获得了以MD5和sha-1输出的签名，但是我还没搞懂对谁签的名。<br><a id="more"></a></p>
-<h4 id="用法示例"><a href="#用法示例" class="headerlink" title="用法示例"></a>用法示例</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap host --script ssh-hostkey --script-args ssh_hostkey=sha256</span></pre></td></tr></table></figure>
-<p>返回的是以sha256形式输出的Hostkey，示例如下图：<br><img src="https://img-blog.csdnimg.cn/20200226195740230.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="hostkey"></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap -sV --script ssl-<span class="keyword">enum</span>-ciphers -p <span class="number">443</span> &lt;主机&gt;</span></pre></td></tr></table></figure>
-<p>下面展示一下示例图：<br><img src="https://img-blog.csdnimg.cn/202002262010499.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="ciper"></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap -p443 --script ssl-cert &lt;主机&gt;</span></pre></td></tr></table></figure>
-<p>下面给出示例图：<br><img src="https://img-blog.csdnimg.cn/2020022620205383.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="cert"></p>
-<h3 id="注"><a href="#注" class="headerlink" title="注"></a>注</h3><ul>
-<li>ssh协议对应的端口号是：22</li>
-<li>TLS\SSL对应的端口号是：443，使用的协议是：https</li>
-<li>还有导出到文件的代码：</li>
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>ssh通过创建安全隧道来实现ssh客户端与服务器之间的连接，<br>它的主要用途是连接远程服务器然后在上面执行指令。<br><a id="more"></a></p>
+<h2 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h2><p>ssh协议主要由三部分组成：</p>
+<ul>
+<li>传输层协议：主要负责认证服务器、加密数据、确保数据完整性</li>
+<li>用户身份验证协议：负责认证使用者是否是ssh服务器的用户</li>
+<li>连接协议：将加密的信息通道改成若干个逻辑通道</li>
 </ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">nmap --script ssl-<span class="keyword">enum</span>-ciphers -p <span class="number">443</span> -iL 使用的文件名加后缀 -oN 导出的文件名加后缀</span></pre></td></tr></table></figure>
-<h3 id="nmap的安装来源"><a href="#nmap的安装来源" class="headerlink" title="nmap的安装来源"></a>nmap的安装来源</h3><p><a href="https://nmap.org/download.html" target="_blank" rel="noopener">nmap</a>直接安装就可以，同时也支持window系统</p>
+<h2 id="传输层协议"><a href="#传输层协议" class="headerlink" title="传输层协议"></a>传输层协议</h2><p>今天主要讲一下传输层协议。</p>
+<h3 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h3><p>sever收到来自client发送过来的请求后，先进行三次握手，建立tcp连接，下面给出我使用wireshark抓到的包<br><img src="https://img-blog.csdnimg.cn/20200321115848326.png" alt="tcp"></p>
+<h3 id="算法协商、版本协商"><a href="#算法协商、版本协商" class="headerlink" title="算法协商、版本协商"></a>算法协商、版本协商</h3><p>双方发送自己所支持的版本号以及算法，协商确定版本及算法，若成功则继续，否则断开连接<br><img src="https://img-blog.csdnimg.cn/20200321120339156.png" alt="init"><br><img src="https://img-blog.csdnimg.cn/20200321120755201.png" alt="版本"><br><img src="https://img-blog.csdnimg.cn/20200321121003478.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200321121021869.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="密钥交换"><a href="#密钥交换" class="headerlink" title="密钥交换"></a>密钥交换</h3><p>client根据server发送过来的数据生成一对密钥，将公钥发送给server<br><img src="https://img-blog.csdnimg.cn/20200321121448908.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/2020032112150720.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>其中有一个e字段，这个就是client所生成的公钥<br>server也会生成一对密钥，并且将自己的公钥与client发送过来的公钥一起生成共享密钥，并且会将自己的临时公钥以及host-key，还有server会收集双方的临时公钥、共享密钥、host-key再加上一定的数据例如：server和client的版本字符串，对这些数据使用之前它们协商好的哈希算法计算其哈希值，然后使用自己的私钥对其签名生成signature，然后将这些值一起发送给client<br><img src="https://img-blog.csdnimg.cn/20200321122304654.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>client收到后会通过host-key先验证服务器的身份，然后将其保存到本地文件夹中，再使用server发送过来的临时公钥生成共享密钥，再加密签名，将其结果与自己所计算的哈希值进行比较，验证数据时没有问题的，这样的话整个密钥协商环节就结束了。</p>
+<p>一旦建立了加密传输层并且验证了server的身份，client就必须进行身份验证，主要有两种方式：</p>
+<ul>
+<li>密码身份验证：主要就是加密密码进行传输</li>
+<li>密钥对认证：客户端生成密钥对然后将公钥发送给server，server将其存储起来并生成对应的id，将id返回给client，之后client则可以通过id进行验证server是否存在自己的公钥，进而验证身份。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我通过wireshark可以很好的看到密钥协商具体过程的数据，让我更好的去理解这个过程，但是我的目的是去提取过程中的数据，到目前还没有找到相应的解决办法。</p>
 
     </div>
 
@@ -342,7 +356,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="/http:/zzylydx.github.io/2020/02/26/%E4%BD%BF%E7%94%A8Nmap%E8%8E%B7%E5%8F%96SSH%E3%80%81SSL_TLS%E4%B8%AD%E5%85%AC%E9%92%A5%E3%80%81cipersutes%E3%80%81%E7%AD%BE%E5%90%8D%E7%AD%89%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE/" title="使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据">http://zzylydx.github.io/2020/02/26/使用Nmap获取SSH、SSL_TLS中公钥、cipersutes、签名等相关数据/</a>
+    <a href="/http:/zzylydx.github.io/2020/03/20/SSH%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/" title="SSH协议握手过程详解">http://zzylydx.github.io/2020/03/20/SSH协议握手过程详解/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -361,7 +375,7 @@
 </div>
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Nmap/" rel="tag"><i class="fa fa-tag"></i>Nmap</a>
+              <a href="/tags/ssh%E5%8D%8F%E8%AE%AE/" rel="tag"><i class="fa fa-tag"></i>ssh协议</a>
           </div>
 
         
@@ -370,12 +384,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/02/18/Private%20Key%20Recovery%20Combination%20Attacks2/" rel="prev" title="Private Key Recovery Combination Attacks2">
-      <i class="fa fa-chevron-left"></i> Private Key Recovery Combination Attacks2
+    <a href="/2020/03/14/%E8%A7%A3%E6%9E%90%E6%AF%94%E7%89%B9%E5%B8%81%E5%8C%BA%E5%9D%97.dat%E6%96%87%E4%BB%B6%EF%BC%8C%E8%8E%B7%E5%BE%97%E7%AD%BE%E5%90%8Dr%E4%BB%A5%E5%8F%8A%E5%85%B6%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%EF%BC%8C%E5%B9%B6%E6%89%BE%E5%87%BA%E7%9B%B8%E5%90%8C%E7%9A%84r%E5%8F%8A%E6%81%A2%E5%A4%8D%E7%A7%81%E9%92%A5/" rel="prev" title="解析比特币区块.dat文件，获得签名r以及其相关信息，并找出相同的r及恢复私钥">
+      <i class="fa fa-chevron-left"></i> 解析比特币区块.dat文件，获得签名r以及其相关信息，并找出相同的r及恢复私钥
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/02/28/SSL_TLS%E6%8F%A1%E6%89%8B/" rel="next" title="SSL_TLS握手">
-      SSL_TLS握手 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/23/pyshark%E8%A7%A3%E6%9E%90pcap%E6%96%87%E4%BB%B6%EF%BC%88%E6%9C%89%E5%85%B3ssh%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%EF%BC%89/" rel="next" title="pyshark解析pcap文件（有关ssh协议握手过程的数据提取）">
+      pyshark解析pcap文件（有关ssh协议握手过程的数据提取） <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -419,7 +433,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nmap工具"><span class="nav-number">1.</span> <span class="nav-text">Nmap工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关脚本"><span class="nav-number">1.1.</span> <span class="nav-text">相关脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用法示例"><span class="nav-number">1.1.1.</span> <span class="nav-text">用法示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注"><span class="nav-number">1.2.</span> <span class="nav-text">注</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nmap的安装来源"><span class="nav-number">1.3.</span> <span class="nav-text">nmap的安装来源</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协议"><span class="nav-number">2.</span> <span class="nav-text">协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传输层协议"><span class="nav-number">3.</span> <span class="nav-text">传输层协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建立连接"><span class="nav-number">3.1.</span> <span class="nav-text">建立连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法协商、版本协商"><span class="nav-number">3.2.</span> <span class="nav-text">算法协商、版本协商</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#密钥交换"><span class="nav-number">3.3.</span> <span class="nav-text">密钥交换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -607,6 +621,56 @@ setInterval("createtime()",250);
   
 
   
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
 
   
 

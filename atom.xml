@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://zzylydx.github.io/"/>
-  <updated>2020-03-15T12:01:02.358Z</updated>
+  <updated>2020-03-23T10:22:34.575Z</updated>
   <id>http://zzylydx.github.io/</id>
   
   <author>
@@ -15,6 +15,52 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>pyshark解析pcap文件（有关ssh协议握手过程的数据提取）</title>
+    <link href="http://zzylydx.github.io/2020/03/23/pyshark%E8%A7%A3%E6%9E%90pcap%E6%96%87%E4%BB%B6%EF%BC%88%E6%9C%89%E5%85%B3ssh%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%EF%BC%89/"/>
+    <id>http://zzylydx.github.io/2020/03/23/pyshark%E8%A7%A3%E6%9E%90pcap%E6%96%87%E4%BB%B6%EF%BC%88%E6%9C%89%E5%85%B3ssh%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%EF%BC%89/</id>
+    <published>2020-03-23T10:33:41.000Z</published>
+    <updated>2020-03-23T10:22:34.575Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p> 我需要提取ssh协议握手过程中的数据，找了很多办法，比如是不是可以通过nmap直接提取数据，但是nmap只能提取到服务器使用的算法以及服务器的公钥，所以还需要找其他可行的办法<br> <a id="more"></a></p><h2 id="wireshark"><a href="#wireshark" class="headerlink" title="wireshark"></a>wireshark</h2><p>知道wireshark的都清楚它的功能，就是截取网络上的数据包，这让我们对互联网有了更加直观的了解，通过截取到的包可以很直观的看到互联网上数据的交互过程。<br>所以我选择使用nmap去访问服务器，然后通过wireshark截取包，再将包导出，wireshark导出的包文件是$.pcap$类型的，网上有很多解析的例子，我也看了很多，比如可以根据该文件类型的结构对其解析，还有可以通过现有的库对其解析：</p><ul><li>$pyshark$</li><li>$scapy$</li><li>$pycapfile$<br>等等。。。。<br>这些工具功能应该都是类似的，大体说一下就是可以发送数据包和接收数据包并保存到本地，可以对数据包进行解析，比如$pyshark$可以解析$.pcap$的数据包，别的不多说了上图：<br><img src="https://img-blog.csdnimg.cn/20200323154336925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>这个用法呢就是遍历将文件里面指定的包输出，每个包里面有四个层：$ETH,IP,TCP,SSH$<br>通过：<code>i.ssh</code>就可以访问该层的内容<br><img src="https://img-blog.csdnimg.cn/20200323154650977.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></li></ul><hr><p>然后通过特定的函数就可以进行无限的想象和使用举个比较实用的例子：<code>i.ssh.get_field_by_showname(&#39;字段名&#39;)</code>，这样就可以取出ssh层下你想要的数据<br><img src="https://img-blog.csdnimg.cn/20200323155643112.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p><h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>然后我就这样一步步将所有的想要得到的数据提取了出来，但是还是有些混乱，我猜测看能是多次访问的缘故<br><img src="https://img-blog.csdnimg.cn/20200323155855746.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>PyShark入门(4)：packet对象<br><a href="http://zodiacg.net/2016/07/intro2pyshark-ep4/" target="_blank" rel="noopener">http://zodiacg.net/2016/07/intro2pyshark-ep4/</a></p><p>我获得实用工具思路的论坛<br><a href="https://stackoverflow.com/questions/4948043/how-to-parse-packets-in-a-python-library" target="_blank" rel="noopener">https://stackoverflow.com/questions/4948043/how-to-parse-packets-in-a-python-library</a></p><p>官方文档<br><a href="http://kiminewt.github.io/pyshark/" target="_blank" rel="noopener">http://kiminewt.github.io/pyshark/</a></p><p>wireshark知乎大神写的<br><a href="https://zhuanlan.zhihu.com/p/31512066" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/31512066</a></p><p>example<br><a href="https://www.programcreek.com/python/example/92562/pyshark.FileCapture" target="_blank" rel="noopener">https://www.programcreek.com/python/example/92562/pyshark.FileCapture</a></p><p>大神写的pcap文件的结构分析<br><a href="https://blog.csdn.net/dog250/article/details/52005893" target="_blank" rel="noopener">https://blog.csdn.net/dog250/article/details/52005893</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt; 我需要提取ssh协议握手过程中的数据，找了很多办法，比如是不是可以通过nmap直接提取数据，但是nmap只能提取到服务器使用的算法以及服务器的公钥，所以还需要找其他可行的办法&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="ssh" scheme="http://zzylydx.github.io/categories/ssh/"/>
+    
+    
+      <category term="pyshark" scheme="http://zzylydx.github.io/tags/pyshark/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SSH协议握手过程详解</title>
+    <link href="http://zzylydx.github.io/2020/03/20/SSH%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://zzylydx.github.io/2020/03/20/SSH%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/</id>
+    <published>2020-03-20T10:33:41.000Z</published>
+    <updated>2020-03-23T10:20:42.677Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>ssh通过创建安全隧道来实现ssh客户端与服务器之间的连接，<br>它的主要用途是连接远程服务器然后在上面执行指令。<br><a id="more"></a></p><h2 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h2><p>ssh协议主要由三部分组成：</p><ul><li>传输层协议：主要负责认证服务器、加密数据、确保数据完整性</li><li>用户身份验证协议：负责认证使用者是否是ssh服务器的用户</li><li>连接协议：将加密的信息通道改成若干个逻辑通道</li></ul><h2 id="传输层协议"><a href="#传输层协议" class="headerlink" title="传输层协议"></a>传输层协议</h2><p>今天主要讲一下传输层协议。</p><h3 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h3><p>sever收到来自client发送过来的请求后，先进行三次握手，建立tcp连接，下面给出我使用wireshark抓到的包<br><img src="https://img-blog.csdnimg.cn/20200321115848326.png" alt="tcp"></p><h3 id="算法协商、版本协商"><a href="#算法协商、版本协商" class="headerlink" title="算法协商、版本协商"></a>算法协商、版本协商</h3><p>双方发送自己所支持的版本号以及算法，协商确定版本及算法，若成功则继续，否则断开连接<br><img src="https://img-blog.csdnimg.cn/20200321120339156.png" alt="init"><br><img src="https://img-blog.csdnimg.cn/20200321120755201.png" alt="版本"><br><img src="https://img-blog.csdnimg.cn/20200321121003478.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200321121021869.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="密钥交换"><a href="#密钥交换" class="headerlink" title="密钥交换"></a>密钥交换</h3><p>client根据server发送过来的数据生成一对密钥，将公钥发送给server<br><img src="https://img-blog.csdnimg.cn/20200321121448908.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/2020032112150720.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>其中有一个e字段，这个就是client所生成的公钥<br>server也会生成一对密钥，并且将自己的公钥与client发送过来的公钥一起生成共享密钥，并且会将自己的临时公钥以及host-key，还有server会收集双方的临时公钥、共享密钥、host-key再加上一定的数据例如：server和client的版本字符串，对这些数据使用之前它们协商好的哈希算法计算其哈希值，然后使用自己的私钥对其签名生成signature，然后将这些值一起发送给client<br><img src="https://img-blog.csdnimg.cn/20200321122304654.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>client收到后会通过host-key先验证服务器的身份，然后将其保存到本地文件夹中，再使用server发送过来的临时公钥生成共享密钥，再加密签名，将其结果与自己所计算的哈希值进行比较，验证数据时没有问题的，这样的话整个密钥协商环节就结束了。</p><p>一旦建立了加密传输层并且验证了server的身份，client就必须进行身份验证，主要有两种方式：</p><ul><li>密码身份验证：主要就是加密密码进行传输</li><li>密钥对认证：客户端生成密钥对然后将公钥发送给server，server将其存储起来并生成对应的id，将id返回给client，之后client则可以通过id进行验证server是否存在自己的公钥，进而验证身份。</li></ul><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我通过wireshark可以很好的看到密钥协商具体过程的数据，让我更好的去理解这个过程，但是我的目的是去提取过程中的数据，到目前还没有找到相应的解决办法。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;ssh通过创建安全隧道来实现ssh客户端与服务器之间的连接，&lt;br&gt;它的主要用途是连接远程服务器然后在上面执行指令。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="ssh" scheme="http://zzylydx.github.io/categories/ssh/"/>
+    
+    
+      <category term="ssh协议" scheme="http://zzylydx.github.io/tags/ssh%E5%8D%8F%E8%AE%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>解析比特币区块.dat文件，获得签名r以及其相关信息，并找出相同的r及恢复私钥</title>
@@ -440,26 +486,6 @@
     
     
       <category term="Bitcoin" scheme="http://zzylydx.github.io/tags/Bitcoin/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://zzylydx.github.io/2019/12/01/hello-world/"/>
-    <id>http://zzylydx.github.io/2019/12/01/hello-world/</id>
-    <published>2019-12-01T06:58:36.193Z</published>
-    <updated>2020-01-29T09:21:47.064Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span></pre></td></tr></table></figure><a id="more"></a><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo server</span></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo generate</span></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id=&quot;Quick-Start&quot;&gt;&lt;a href=&quot;#Quick-Start&quot; class=&quot;headerlink&quot; title=&quot;Quick Start&quot;&gt;&lt;/a&gt;Quick Start&lt;/h2&gt;&lt;h3 id=&quot;Create-a-new-post&quot;&gt;&lt;a href=&quot;#Create-a-new-post&quot; class=&quot;headerlink&quot; title=&quot;Create a new post&quot;&gt;&lt;/a&gt;Create a new post&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ hexo new &lt;span class=&quot;string&quot;&gt;&quot;My New Post&quot;&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-    
-    </summary>
-    
-    
     
   </entry>
   
