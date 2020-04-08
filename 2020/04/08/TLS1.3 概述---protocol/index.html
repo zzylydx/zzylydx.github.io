@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.proxy.ustclug.org/css?family=Lato:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "6542041d"
+    });
+  daovoice('update');
+  </script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://zzylydx.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="TLS1.3的最终版本，在2018年8月发布，它包含着很多不同以往版本的改进，相对于之前版本安全性以及性能具有极大的提高，同时它也具备了更多的扩展和握手模式，那么从实现完整TLS1.3结构的角度去学习TLS，我们应该从哪些方面入手呢？">
+<meta name="keywords" content="TLS1.3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TLS1.3 概述---protocol">
+<meta property="og:url" content="http:&#x2F;&#x2F;zzylydx.github.io&#x2F;2020&#x2F;04&#x2F;08&#x2F;TLS1.3%20%E6%A6%82%E8%BF%B0---protocol&#x2F;index.html">
+<meta property="og:site_name" content="Stride Max Zz">
+<meta property="og:description" content="TLS1.3的最终版本，在2018年8月发布，它包含着很多不同以往版本的改进，相对于之前版本安全性以及性能具有极大的提高，同时它也具备了更多的扩展和握手模式，那么从实现完整TLS1.3结构的角度去学习TLS，我们应该从哪些方面入手呢？">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200407154557900.png#pic_center">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200407165241785.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200407170442936.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2020040718531413.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200407193233929.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:image" content="https:&#x2F;&#x2F;imgconvert.csdnimg.cn&#x2F;aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy84MDA5Ny1jYTUzZDNkMDg2NDUwYjZiLnBuZw?x-oss-process&#x3D;image&#x2F;format,png#pic_center">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200408150844823.png?x-oss-process&#x3D;image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center">
+<meta property="og:updated_time" content="2020-04-08T10:51:00.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200407154557900.png#pic_center">
+
+<link rel="canonical" href="http://zzylydx.github.io/2020/04/08/TLS1.3%20%E6%A6%82%E8%BF%B0---protocol/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>TLS1.3 概述---protocol | Stride Max Zz</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Stride Max Zz" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/zzylydx" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Stride Max Zz</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zzylydx.github.io/2020/04/08/TLS1.3%20%E6%A6%82%E8%BF%B0---protocol/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/T.jpg">
+      <meta itemprop="name" content="zzy">
+      <meta itemprop="description" content="记录成长的点滴">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Stride Max Zz">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TLS1.3 概述---protocol
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-08 18:33:41 / 修改时间：18:51:00" itemprop="dateCreated datePublished" datetime="2020-04-08T18:33:41+08:00">2020-04-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TLS/" itemprop="url" rel="index">
+                    <span itemprop="name">TLS</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+	    <span class="post-meta-divider">|</span>
+	    <span title="post.wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span>字数： 4.5k</span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    
+      <a title="changyan" href="/2020/04/08/TLS1.3%20%E6%A6%82%E8%BF%B0---protocol/#SOHUCS" itemprop="discussionUrl">
+        <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2020/04/08/TLS1.3 概述---protocol/" itemprop="commentCount"></span>
+      </a>
+    
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://img-blog.csdnimg.cn/20200407154557900.png#pic_center" alt="tls1.3"><br>TLS1.3的最终版本，在2018年8月发布，它包含着很多不同以往版本的改进，相对于之前版本安全性以及性能具有极大的提高，同时它也具备了更多的扩展和握手模式，那么从实现完整TLS1.3结构的角度去学习TLS，我们应该从哪些方面入手呢？<br><br/><br> <a id="more"></a></p>
+<h2 id="什么是TLS"><a href="#什么是TLS" class="headerlink" title="什么是TLS"></a>什么是TLS</h2><hr>
+<p>TLS代表传输层安全性，并且是SSL（安全套接字层）的后继者。TLS提供了Web浏览器和服务器之间的安全通信。连接本身是安全的，因为使用对称密码术对传输的数据进行加密。密钥是为每个连接唯一生成的，并且基于在会话开始时协商的共享机密（也称为TLS握手）。<code>HTTP + TLS = HTTPS</code></p>
+<h3 id="TLS历史"><a href="#TLS历史" class="headerlink" title="TLS历史"></a>TLS历史</h3><p><img src="https://img-blog.csdnimg.cn/20200407165241785.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="history"><br><br/></p>
+<h2 id="TLS1-2"><a href="#TLS1-2" class="headerlink" title="TLS1.2"></a>TLS1.2</h2><hr>
+<h3 id="TLS1-2握手原理"><a href="#TLS1-2握手原理" class="headerlink" title="TLS1.2握手原理"></a>TLS1.2握手原理</h3><p><img src="https://img-blog.csdnimg.cn/20200407170442936.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="tls1.2"><br>握手的过程主要包括两部分：</p>
+<ul>
+<li>参数协商<br>  客户端向服务器发送client Hello消息，里面包含client所支持的参数（密码套件等等），还包含一些有用的参数（version、random、sessionId等等），server会从中选取自己支持的密码套件、版本，通过server Hello发送给client，其中也包含一个随机数还有一些其他字段。</li>
+<li>密钥交换<br>  之后server会通过Server Key Exchange消息向client发送自己用于协商的公钥，用于协商的算法是：ECDHE或DHE，同样client通过 Client Key Exchange 发送自己的公钥，这样双方都具有了彼此的公钥，用它们生成临时私钥。client在收到server的Certificate消息之后会验证server的身份，验证通过才会发送Client Key Exchange，其中还包含着pre-Masterkey，是对client生成的随机数加密得来，最后使用三个随机数生成Masterkey用于会话密钥。  </li>
+</ul>
+<p>观察图片我们可以看出，TLS1.2整个握手过程需要2个RTT时间，而且每次握手都用到了非对称加密算法签名或者解密的操作，比较耗时和耗 CPU，每次都要传输证书，证书比较大会消耗带宽。    </p>
+<ul>
+<li>RTT<br>  Round-Trip Time，往返时延，在计算机网络中它也是一个重知要的性能指标，它表示从发送端发道送数据开始，到发送端收到来自接收端的确认版（接收端收到数据后便立即发送确认），总共经历的时延。</li>
+</ul>
+<h3 id="TLS1-2会话恢复"><a href="#TLS1-2会话恢复" class="headerlink" title="TLS1.2会话恢复"></a>TLS1.2会话恢复</h3><ul>
+<li>SessionID<br>  将协商好的会话参数缓存在客户端与服务器中，client下次握手时会带上上次握手的SessionID，server对其查询，若存在直接复用。</li>
+<li>SessionTicket<br>  server将协商好的会话参数和密钥加密发送给客户端，client下次握手会将这个SessionTicket带上，如果server解密成功就复用上次的会话参数和密钥。   </li>
+</ul>
+<p>在TLS1.3中没有了SessionID这种会话恢复模式，但是在client Hello中还会存在该字段，主要是为了兼容版本。并且在SessionTicket模式中，添加了Ticket age，指的是会话是存在时间限制的，如果超过了该时间，那么也就不能进行会话恢复。    </p>
+<p><img src="https://img-blog.csdnimg.cn/2020040718531413.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="sessionid"><br>我们可以看到，使用SessionID恢复会话的时候，需要花费1个RTT的时间，在TLS1.3中一定情况下恢复会话只需要花费0个RTT!    </p>
+<p>在握手的过程中很多数据都会临时计算，如果我们把这些数据提前计算出来，然后存入扩展当中，这样就可以减少握手的时间为1个RTT，TLS1.3实现的主要思想就是这样的。   </p>
+<h2 id="TLS1-3"><a href="#TLS1-3" class="headerlink" title="TLS1.3"></a>TLS1.3</h2><hr>
+<h3 id="TLS1-3握手"><a href="#TLS1-3握手" class="headerlink" title="TLS1.3握手"></a>TLS1.3握手</h3><p>更快的访问速度<br><img src="https://img-blog.csdnimg.cn/20200407193233929.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="TLS1.2handshake"><br>这是一张TLS1.2的握手过程图片，前面也分析过，它需要2个RTT的时间才能完成整个握手过程，下面我们看一下TLS1.3的握手过程图：  </p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy84MDA5Ny1jYTUzZDNkMDg2NDUwYjZiLnBuZw?x-oss-process=image/format,png#pic_center" alt="tls1.3extension"><br>我们会发现，其中存在一些以前版本从来没有出现过的extension，比如：key_share、signature_algorithms等等，这只是一部分，还包含很多扩展，我会一一细说。正因为这些扩展才使得TLS1.3的握手速度大大提高。    </p>
+<p>注：</p>
+<ul>
+<li>+：上一消息的扩展消息  </li>
+<li>*：可选发送</li>
+<li>{}：用握手层流密钥加密</li>
+<li>[]：用流密钥加密  </li>
+</ul>
+<h4 id="client-Hello"><a href="#client-Hello" class="headerlink" title="client Hello"></a>client Hello</h4><p>当client第一次连接server的时候，它需要向server发送client Hello 消息。    </p>
+<p>clientHello消息的结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">uint16 ProtocolVersion;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    opaque Random[<span class="number">32</span>];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    uint8 CipherSuite[<span class="number">2</span>];    <span class="comment">/* Cryptographic suite selector */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    <span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">        ProtocolVersion legacy_version = <span class="number">0x0303</span>;    <span class="comment">/* TLS v1.2 */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        Random <span class="built_in">random</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        opaque legacy_session_id&lt;<span class="number">0.</span><span class="number">.32</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">        CipherSuite cipher_suites&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-2</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">        opaque legacy_compression_methods&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">        Extension extensions&lt;<span class="number">8.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    &#125; ClientHello;</span></pre></td></tr></table></figure>
+<p>简单介绍一下比较重要的几个字段的含义：     </p>
+<ul>
+<li>legacy_version<br>在 TLS 以前的版本里，这个字段被用来版本协商和表示 Client 所能支持的 TLS 最高版本号。经验表明，很多 Server 并没有正确的实现版本协商，导致了 “version intolerance” —— Sever 拒绝了一些本来可以支持的 ClientHello 消息，只因为这些消息的版本号高于 Server 能支持的版本号。在TLS1.3中，设置了一个supported_version的扩展来表明client所支持的版本。legacy_version 字段必须设置成 0x0303，这是 TLS 1.2 的版本号。在 TLS 1.3 中的 ClientHello 消息中的 legacy_version 都设置成 0x0303，supported_versions 扩展设置成 0x0304。主要是为了兼容之前的TLS版本。</li>
+<li>legacy_session_id<br>前面我也提到过，TLS1.3中不再使用SessionID进行会话恢复，这一特性已经和预共享密钥PSK合并了，设置这个字段的意义，主要也是为了兼容之前版本，如果 Client 有 TLS 1.3 版本之前的 Server 设置的缓存 Session ID，那么这个字段要填上这个 ID 值。兼容模式下，这个值必须是非空的，所以如果Client不能提供之前版本的值，那么需要重新生成一个32字节的值。   </li>
+</ul>
+<p>还有cipher_suites、legacy_compression_methods，包含的是Client支持的密码套件和压缩算法，压缩算法TLS1.3也已经不再支持了，这个字段主要还是为了兼容版本，对于每个 ClientHello，该向量必须包含一个设置为 0 的一个字节，它对应着 TLS 之前版本中的 null 压缩方法。  </p>
+<h4 id="supported-groups"><a href="#supported-groups" class="headerlink" title="supported_groups"></a>supported_groups</h4><p>这个扩展表明了 Client 支持的用于密钥交换的命名组。按照优先级从高到低。这个扩展中的 “extension_data” 字段包含一个 “NamedGroupList” 值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">         <span class="comment">/* Elliptic Curve Groups (ECDHE) */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">         secp256r1(<span class="number">0x0017</span>), secp384r1(<span class="number">0x0018</span>), secp521r1(<span class="number">0x0019</span>),</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">         x25519(<span class="number">0x001D</span>), x448(<span class="number">0x001E</span>),</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">         <span class="comment">/* Finite Field Groups (DHE) */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">         ffdhe2048(<span class="number">0x0100</span>), ffdhe3072(<span class="number">0x0101</span>), ffdhe4096(<span class="number">0x0102</span>),</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">         ffdhe6144(<span class="number">0x0103</span>), ffdhe8192(<span class="number">0x0104</span>),</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">         <span class="comment">/* Reserved Code Points */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">         ffdhe_private_use(<span class="number">0x01FC</span>.<span class="number">.0</span>x01FF),</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">         ecdhe_private_use(<span class="number">0xFE00</span>.<span class="number">.0</span>xFEFF),</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">         (<span class="number">0xFFFF</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">     &#125; NamedGroup;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">         NamedGroup named_group_list&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">     &#125; NamedGroupList;</span></pre></td></tr></table></figure>
+<h4 id="key-share"><a href="#key-share" class="headerlink" title="key_share"></a>key_share</h4><p>这个扩展我觉得是TLS1.3的重大改变，它里面包含了Client对应于supported_groups中参数的公钥集，如果使用了曲线，则会表明所使用的曲线以及对应的公钥。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">       NamedGroup group;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">       opaque key_exchange&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">   &#125; KeyShareEntry;</span></pre></td></tr></table></figure>
+<ul>
+<li>group:<br>要交换的密钥的命名组。</li>
+<li>key_exchange:<br>密钥交换信息。这个字段的内容由特定的组和相应的定义确定。主要包含特定组的公钥等信息。   </li>
+</ul>
+<p>在 ClientHello 消息中，”key_share” 扩展中的 “extension_data” 包含 KeyShareClientHello 值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">        KeyShareEntry client_shares&lt;<span class="number">0.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    &#125; KeyShareClientHello;</span></pre></td></tr></table></figure>
+<ul>
+<li>client_shares:<br>按照 Client 偏好降序顺序提供的 KeyShareEntry 值列表。  </li>
+</ul>
+<p>在golang中该结构的实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> KeyShareEntry <span class="keyword">struct</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">	group 			NamedGroup</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">	length			<span class="keyword">uint16</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">	keyExchange		[]<span class="keyword">byte</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> KeyShareClientHello <span class="keyword">struct</span> &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">	length 			<span class="keyword">uint16</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">	clientShares	[]KeyShareEntry</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+<p>如果我们只实现椭圆曲线的话，首先需要选择要使用的椭圆曲线，之后再选取随机数生成公钥，将公钥存入keyExchange字段中，也就是说这个扩展已经将Client用于协商会话密钥的参数提前计算出来，并存储了起来，这与之前版本的形式server先选择参数，然后发给Client，然后Client再计算相比较，极大的节省了时间和握手过程中占用的CPU。  </p>
+<p>Client 可以提供与其提供的 support groups 一样多数量的 KeyShareEntry 的值。每个值都代表了一组密钥交换参数。例如，Client 可能会为多个椭圆曲线或者多个 FFDHE 组提供 shares。每个 KeyShareEntry 中的 key_exchange 值必须独立生成。Client 不能为相同的 group 提供多个 KeyShareEntry 值。Client 不能为，没有出现在 Client 的 “supported_group” 扩展中列出的 group 提供任何 KeyShareEntry 值。Server 会检查这些规则，如果违反了规则，立即发送 “illegal_parameter” alert 消息中止握手。  </p>
+<p>当选用PSK密钥协商模式时，即使在supported_groups中不存在支持的算法也不会终止握手，这时候，server会向Client发送和serverhello具有相同结构的消息：HelloRetryRequest，它的目的主要是想让Client作出一些改变以使得握手正常进行，在这种情况下，在 HelloRetryRequest 消息中，”key_share” 扩展中的 “extension_data” 字段包含 KeyShareHelloRetryRequest 值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">      NamedGroup selected_group;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  &#125; KeyShareHelloRetryRequest;</span></pre></td></tr></table></figure>
+<ul>
+<li>selected_group<br>表明server所选择的NamedGroup中组  </li>
+</ul>
+<p>Client收到此消息之后也会对其进行验证，selected_group是否在NamedGroup中出现了，selected_group 没有在原始的 ClientHello 中的 “key_share” 中出现过。如果上面 的检查都失败了，那么 Client 必须通过 “illegal_parameter” alert 消息来中止握手。否则，在发送新的 ClientHello 时，Client 必须将原始的 “key_share” 扩展替换为仅包含触发 HelloRetryRequest 的 selected_group 字段中指示的组,这个组中只包含新的 KeyShareEntry。  </p>
+<p>在 ServerHello 消息中，”key_share” 扩展中的 “extension_data” 字段包含 KeyShareServerHello 值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">        KeyShareEntry server_share;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    &#125; KeyShareServerHello;</span></pre></td></tr></table></figure>
+<ul>
+<li>server_share:<br>与 Client 共享的位于同一组的单个 KeyShareEntry 值。  </li>
+</ul>
+<p>我们再来看一下ECDHE的参数，对于 secp256r1，secp384r1 和 secp521r1，内容是以下结构体的序列化值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    uint8 legacy_form = <span class="number">4</span>;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    opaque X[coordinate_length];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    opaque Y[coordinate_length];</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">&#125; UncompressedPointRepresentation;</span></pre></td></tr></table></figure>
+<p>对端还要验证对方的公钥以确保为有效的点：</p>
+<ul>
+<li>验证公钥不是无穷大点</li>
+<li>两个整数x、y中间有正确的间隔</li>
+<li>x、y是椭圆曲线方程的正确的解</li>
+</ul>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>TLS 1.3 中优化握手：</p>
+<ul>
+<li>client发送clientHello（extension）消息，extension中的support_groups中携带client支持的椭圆曲线的类型，并且在扩展key_share中计算出了相对应的公钥，一起发送给server</li>
+<li>server收到clientHello后会首先选择相应的椭圆曲线参数计算自身的公钥，从key_share扩展中提取相应的公钥作为密钥协商的参数，计算主密钥，并且把自身计算出的公钥放到serverHello的扩展key_share中，然后发送serverHello等消息给client，Client从key_share中取出公钥计算主密钥。  </li>
+</ul>
+<h3 id="TLS1-3会话恢复"><a href="#TLS1-3会话恢复" class="headerlink" title="TLS1.3会话恢复"></a>TLS1.3会话恢复</h3><p>在本文前面我提到过TLS1.3已经不再使用SessionID进行会话恢复了，现在主要使用的是SessionTicket进行会话恢复，但是又不同于TLS1.2中使用SessionTicket进行会话恢复的过程，也做出了一些改变，或者说是进行了一些更新（PSK）。   </p>
+<p><img src="https://img-blog.csdnimg.cn/20200408150844823.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM1MzI0MDU3,size_16,color_FFFFFF,t_70#pic_center" alt="tls1.3handshake"><br>会话恢复所花费的时间是1个RTT，这与整个的握手时间是一样的。在TLS1.3中采用的会话恢复机制是PSK它与SessionTicket有些类似，Client通过PSK发送被server加密的会话缓存参数，如果server解密成功就可以直接复用会话，不需要再重新传输证书和协商密钥了。</p>
+<h4 id="密钥交换模式"><a href="#密钥交换模式" class="headerlink" title="密钥交换模式"></a>密钥交换模式</h4><ul>
+<li>PSK-Only</li>
+<li>(EC)DHE</li>
+<li>PSK with (EC)DHE（暂时还没出现）</li>
+</ul>
+<h4 id="PSK-handshake"><a href="#PSK-handshake" class="headerlink" title="PSK handshake"></a>PSK handshake</h4><p>在使用PSK密钥交换模式时我们首先要了解几个ClientHello的其它扩展：</p>
+<h5 id="Pre-Shared-Key-Exchange-Modes"><a href="#Pre-Shared-Key-Exchange-Modes" class="headerlink" title="Pre-Shared Key Exchange Modes"></a>Pre-Shared Key Exchange Modes</h5><p>为了使用PSK，client还需要发送Pre-Shared Key Exchange Modes扩展，它的含义是Client 仅支持使用具有这些模式的 PSK，这就限制了在这个 ClientHello 中提供的 PSK 的使用，也限制了 Server 通过 NewSessionTicket 提供的 PSK 的使用。<br>如果Client提供了 pre_shared_key扩展，那么就必须提供该扩展</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123; psk_ke(<span class="number">0</span>), psk_dhe_ke(<span class="number">1</span>), (<span class="number">255</span>) &#125; PskKeyExchangeMode;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        PskKeyExchangeMode ke_modes&lt;<span class="number">1.</span><span class="number">.255</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    &#125; PskKeyExchangeModes;</span></pre></td></tr></table></figure>
+<ul>
+<li>psk_ke:<br>仅 PSK 密钥建立。在这种模式下，Server 不能提供 key_share 值</li>
+<li>psk_dhe_ke:<br>PSK 和 (EC)DHE 建立。在这种模式下，Client 和 Server 必须提供 key_share值。  </li>
+</ul>
+<p>这样的话就可以进行模式选择，并作出相应的改变。未来分配的任何值都必须要能保证传输的协议消息可以明确的标识 Server 选择的模式。目前 Server 选择的值由 ServerHello 中存在的 key_share 表示。   </p>
+<h5 id="Pre-Shared-Key"><a href="#Pre-Shared-Key" class="headerlink" title="Pre-Shared Key"></a>Pre-Shared Key</h5><p>该扩展是用来协商标识的，该标识是与PSK密钥相关联的给定握手所使用的预共享密钥的标识。或者说是New Session Ticket+binders，由于在TLS1.3中，New Session Ticket可以在握手结束后可能多次发送，所以Pre-Shared Key可能会存储多组对应的值，下面我们具体来了解一下它的结构。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">          opaque identity&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">          uint32 obfuscated_ticket_age;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">      &#125; PskIdentity;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">      opaque PskBinderEntry&lt;<span class="number">32.</span><span class="number">.255</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">      <span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">          PskIdentity identities&lt;<span class="number">7.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">          PskBinderEntry binders&lt;<span class="number">33.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">      &#125; OfferedPsks;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">      <span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">          select (Handshake.msg_type) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">              <span class="keyword">case</span> client_hello: OfferedPsks;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">              <span class="keyword">case</span> server_hello: uint16 selected_identity;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">          &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">      &#125; PreSharedKeyExtension;</span></pre></td></tr></table></figure>
+<ul>
+<li>identity:<br>一个预共享密钥的标签。</li>
+<li>obfuscated_ticket_age:<br>SessionTicket的寿命的混淆版本，为了防止一些相关连接的被动观察者。而在TLS1.2中是不存在这样的字段，即不会标识出客户端已存在的时间，server收到后主要靠里面的内容来判断Ticket是否过期，而在TLS1.3中就增加了这样一个字段来表示Ticket的寿命，因为是明文传输所以会被观察者发现，所以给时间加了一些调味品，是New Session Ticket中的ticket_age_add，因为New Session Ticket本身就是被加密的，所以这个ticket_age_add只有通信两端才知道。</li>
+<li>混淆的方法：<br>用 ticket 时间(毫秒为单位)加上 “ticket_age_add” 字段，最后对 2^32 取模。注意，NewSessionTicket 消息中的 “ticket_lifetime” 字段是秒为单位，但是 “obfuscated_ticket_age” 是毫秒为单位。</li>
+<li>identities:<br>Client 愿意和 Server 协商的 identities 列表，其内容就是NewSessionTicket中的ticket部分。如果和 early_data 一起发送，第一个标识被用来标识 0-RTT 的。有关early_data后面还会说到。</li>
+<li>selected_identity:<br>server选择的标识，是server在自己的 Pre-Shared Key扩展中自己设置的选择的标识，表明正常解析了Client的扩展，其实选择的话就是一个序号。   </li>
+</ul>
+<h4 id="0-RTT"><a href="#0-RTT" class="headerlink" title="0-RTT"></a>0-RTT</h4><p>前面已经提到过TLS1.3已经将握手时间优化到了1-RTT，对比之前版本的速度已经快了很多，但是TLS1.3最终极的做法是0-RTT，即握手的时间是0-RTT。  </p>
+<p>Client发送ClientHello消息，除了在PSK模式中提到的那些扩展外，还应该具有一个early_data扩展，同理server发送serverHello中也应该包括该扩展，并表示其愿意接受early_data，client发送完early_data后，发送End_Of_Early_Data报文表示client自己发送完了early_data。  </p>
+<p>如果 Server 提供了 early_data 扩展，Client 必须验证 Server 的 selected_identity 是否为 0。如果返回任何其他值，Client 必须使用 “illegal_parameter” alert 消息中止握手。下面我们看一下它的结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span>&#125; Empty;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        select (Handshake.msg_type) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">case</span> new_session_ticket:   uint32 max_early_data_size;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">case</span> client_hello:         Empty;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">            <span class="keyword">case</span> encrypted_extensions: Empty;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">    &#125; EarlyDataIndication;</span></pre></td></tr></table></figure>
+<p>其中的max_early_data_size字段表明，允许Client发送的最大0-RTT的数据量。  </p>
+<p>发生错误会导致0-RTT降级到1-RTT。  </p>
+<h4 id="New-Session-Ticket"><a href="#New-Session-Ticket" class="headerlink" title="New Session Ticket"></a>New Session Ticket</h4><p>Post-Handshake Messages在 Server 接收到 Client 的 Finished 消息以后的任何时刻，它都可以发送 NewSessionTicket 消息。此消息在 ticket 值和从恢复主密钥派生出来的 PSK 之间创建了唯一的关联。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">       uint32 ticket_lifetime;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">       uint32 ticket_age_add;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">       opaque ticket_nonce&lt;<span class="number">0.</span><span class="number">.255</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">       opaque ticket&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">       Extension extensions&lt;<span class="number">0.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-2</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">   &#125; NewSessionTicket;</span></pre></td></tr></table></figure>
+<ul>
+<li>ticket_lifetime：<br>这个字段表示 ticket 的生存时间，这个时间是以 ticket 发布时间为网络字节顺序的 32 位无符号整数表示以秒为单位的时间。Server 禁止使用任何大于 604800秒(7 天)的值。值为零表示应立即丢弃 ticket。无论 ticket_lifetime 如何，Client 都不得缓存超过 7 天的 ticket，并且可以根据本地策略提前删除 ticket。Server 可以将 ticket 视为有效的时间段短于 ticket_lifetime 中所述的时间段。</li>
+<li>ticket_age_add:<br>安全的生成的随机 32 位值，用于模糊 Client 在 “pre_shared_key” 扩展中包含的 ticket 的时间。Client 的 ticket age 以模 2 ^ 32 的形式添加此值，以计算出 Client 要传输的值。Server 必须为它发出的每个 ticket 生成一个新值。</li>
+<li>ticket_nonce:<br>每一个 ticket 的值，在本次连接中发出的所有的 ticket 中是唯一的。初始值是0，发送一个则++</li>
+<li>ticket:<br>这个值是被用作 PSK 标识的值  </li>
+</ul>
+<h3 id="TLS1-3一些其他扩展和机制"><a href="#TLS1-3一些其他扩展和机制" class="headerlink" title="TLS1.3一些其他扩展和机制"></a>TLS1.3一些其他扩展和机制</h3><h4 id="降级保护机制"><a href="#降级保护机制" class="headerlink" title="降级保护机制"></a>降级保护机制</h4><p>主要通过随机数来实现，当协商TLS1.2或更老的版本，为了响应ClientHello在random后8个字节填入特定的随机值，若为TLS1.2则后8个字节的值为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">44 4F 57 4E 47 52 44 01</span></pre></td></tr></table></figure>
+<h4 id="supported-version"><a href="#supported-version" class="headerlink" title="supported_version"></a>supported_version</h4><p>主要功能的话前面也有提到，对Client标明所支持的TLS版本，对Server标明正在使用的TLS版本，如果协商TLS之前的版本，这个扩展必须带上，若不存在该扩展，server要协商之前的版本，则中止握手，若存在server将禁止使用ClientHello中的legacy_version作为版本协商的值，只能使用supported_versions中的值。<br>对于server：</p>
+<ul>
+<li>版本&lt;TLS1.3 则设置serverHello.version，不能发送supported_version</li>
+<li>版本&gt;=TLS1.3则必须发送supported_version扩展，还要设置serverHello.legacy_version为0x0303，若扩展存在Client会忽略serverHello.legacy_version，而去读取supported_version的值。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">      select (Handshake.msg_type) &#123;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">          <span class="keyword">case</span> client_hello:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">               ProtocolVersion versions&lt;<span class="number">2.</span><span class="number">.254</span>&gt;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">          <span class="keyword">case</span> server_hello: <span class="comment">/* and HelloRetryRequest */</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">               ProtocolVersion selected_version;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">      &#125;;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">  &#125; SupportedVersions;</span></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>zzy
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="/http:/zzylydx.github.io/2020/04/08/TLS1.3%20%E6%A6%82%E8%BF%B0---protocol/" title="TLS1.3 概述---protocol">http://zzylydx.github.io/2020/04/08/TLS1.3 概述---protocol/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+      <div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TLS1-3/" rel="tag"><i class="fa fa-tag"></i>TLS1.3</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/23/pyshark%E8%A7%A3%E6%9E%90pcap%E6%96%87%E4%BB%B6%EF%BC%88%E6%9C%89%E5%85%B3ssh%E5%8D%8F%E8%AE%AE%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96%EF%BC%89/" rel="prev" title="pyshark解析pcap文件（有关ssh协议握手过程的数据提取）">
+      <i class="fa fa-chevron-left"></i> pyshark解析pcap文件（有关ssh协议握手过程的数据提取）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="SOHUCS"></div>
+  </div>
+  
+	
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是TLS"><span class="nav-number">1.</span> <span class="nav-text">什么是TLS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS历史"><span class="nav-number">1.1.</span> <span class="nav-text">TLS历史</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS1-2"><span class="nav-number">2.</span> <span class="nav-text">TLS1.2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS1-2握手原理"><span class="nav-number">2.1.</span> <span class="nav-text">TLS1.2握手原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS1-2会话恢复"><span class="nav-number">2.2.</span> <span class="nav-text">TLS1.2会话恢复</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS1-3"><span class="nav-number">3.</span> <span class="nav-text">TLS1.3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS1-3握手"><span class="nav-number">3.1.</span> <span class="nav-text">TLS1.3握手</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#client-Hello"><span class="nav-number">3.1.1.</span> <span class="nav-text">client Hello</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#supported-groups"><span class="nav-number">3.1.2.</span> <span class="nav-text">supported_groups</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#key-share"><span class="nav-number">3.1.3.</span> <span class="nav-text">key_share</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">3.1.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS1-3会话恢复"><span class="nav-number">3.2.</span> <span class="nav-text">TLS1.3会话恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#密钥交换模式"><span class="nav-number">3.2.1.</span> <span class="nav-text">密钥交换模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PSK-handshake"><span class="nav-number">3.2.2.</span> <span class="nav-text">PSK handshake</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Pre-Shared-Key-Exchange-Modes"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">Pre-Shared Key Exchange Modes</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pre-Shared-Key"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">Pre-Shared Key</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0-RTT"><span class="nav-number">3.2.3.</span> <span class="nav-text">0-RTT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#New-Session-Ticket"><span class="nav-number">3.2.4.</span> <span class="nav-text">New Session Ticket</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS1-3一些其他扩展和机制"><span class="nav-number">3.3.</span> <span class="nav-text">TLS1.3一些其他扩展和机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#降级保护机制"><span class="nav-number">3.3.1.</span> <span class="nav-text">降级保护机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#supported-version"><span class="nav-number">3.3.2.</span> <span class="nav-text">supported_version</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zzy"
+      src="/images/T.jpg">
+  <p class="site-author-name" itemprop="name">zzy</p>
+  <div class="site-description" itemprop="description">记录成长的点滴</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zzylydx" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zzylydx" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zzylydx@gmail.com" title="E-Mail → mailto:zzylydx@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/yourname" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/zzylydx" title="Google → https:&#x2F;&#x2F;plus.google.com&#x2F;zzylydx" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+	<!--������������-->
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+<!-- 在网页底部添加网站运行时间 -->
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("01/01/2020 00:00:00");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "网站已运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+	
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020-04-08</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-smile"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zzy</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">43k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">39 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.5.0
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">全站共 20.8k 字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+  <script>
+  (function() {
+    var appid = 'cyuF4lsoF';
+    var conf = 'bf3cb18c0b02ee881da786112597d211';
+    var width = window.innerWidth || document.documentElement.clientWidth;
+    if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+    } else {
+      var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})});
+    }
+  })();
+  </script>
+  <script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+<!--������-->
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+<!-- ѩ����Ч -->
+<script type="text/javascript">
+  var windowWidth = $(window).width();
+  if (windowWidth > 480) {
+    document.write('<script type="text/javascript" src="/js/src/snow.js"><\/script>');
+  }
+</script>
+
+</body>
+</html>
+<!-- ҳ����С���� -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
